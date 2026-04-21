@@ -1,0 +1,4487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#B8E0F5">
+  <title>English Adventure PK-6 🌈</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="English Adventure">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ========== PASTEL PALETTE ========== */
+    :root {
+      --sky: #B8E0F5;
+      --sky-2: #D4EEFA;
+      --rose: #FFD1DC;
+      --rose-2: #FFE4EC;
+      --sun: #FFF4B8;
+      --sun-2: #FFFAD6;
+      --mint: #B8F0D6;
+      --mint-2: #D6F5E5;
+      --lav: #D4C5F9;
+      --peach: #FFDAB8;
+      --cream: #FFF9F0;
+      --ink: #3A3A5A;
+      --ink-soft: #6B6B8A;
+      --coral: #FF8FA3;
+      --grass: #9EE09E;
+      --grass-d: #7ACF7A;
+      --brown: #C9A27F;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; touch-action: none; }
+    body {
+      background: linear-gradient(135deg, var(--sky-2) 0%, var(--rose-2) 50%, var(--sun-2) 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      font-family: 'Fredoka', system-ui, sans-serif; color: var(--ink);
+      position: relative; min-height: 100vh; min-height: 100dvh;
+    }
+
+    #game-container {
+      position: relative; width: 100%; height: 100vh; height: 100dvh;
+      max-width: 1400px; margin: 0 auto;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+    }
+
+    canvas {
+      background: linear-gradient(180deg, #CDEBFA 0%, #E8F5FF 55%, #D4F0D4 100%);
+      width: 100%; height: 100%; display: block;
+      box-shadow: 0 10px 40px rgba(95, 103, 165, 0.15);
+    }
+
+    /* ========== HUD ========== */
+    #hud {
+      position: absolute; top: 10px; left: 10px; right: 10px;
+      display: none; z-index: 10; pointer-events: none;
+      justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap;
+    }
+    .hud-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      border-radius: 18px;
+      padding: 8px 12px;
+      box-shadow: 0 4px 16px rgba(95, 103, 165, 0.12);
+      display: flex; gap: 10px; align-items: center;
+      font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 15px;
+      color: var(--ink);
+    }
+    .hud-card .stat { display: flex; align-items: center; gap: 4px; }
+    .hud-card .lives { letter-spacing: -1px; }
+    .hud-card .coins-val { color: #D49B2A; }
+    .hud-card .stars-val { color: #E6A500; }
+    .hud-card .name { color: var(--coral); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hud-card .grade-pill {
+      background: var(--lav); color: #4A3F77;
+      padding: 2px 10px; border-radius: 10px; font-size: 12px;
+    }
+    .hud-card .level-progress { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
+
+    .icon-btn {
+      pointer-events: auto;
+      background: rgba(255,255,255,0.85); border: 2px solid rgba(255,255,255,0.95);
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; color: var(--ink);
+      box-shadow: 0 4px 14px rgba(95, 103, 165, 0.15);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .icon-btn:active { transform: scale(0.92); }
+    .icon-btn.active { background: var(--mint); }
+
+    #top-actions { display: flex; gap: 6px; pointer-events: auto; }
+
+    /* ========== PROMPT BOX ========== */
+    #prompt-box {
+      position: absolute; top: 82px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, #FFFFFF 0%, var(--cream) 100%);
+      padding: 14px 20px 14px 16px; border-radius: 22px;
+      box-shadow: 0 10px 32px rgba(95, 103, 165, 0.2);
+      text-align: center; width: calc(100% - 24px); max-width: 560px;
+      font-family: 'Baloo 2', sans-serif; font-size: 17px; font-weight: 700; color: var(--ink);
+      display: none; z-index: 12; border: 3px solid var(--sun);
+      animation: slideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes slideDown { from { transform: translateX(-50%) translateY(-40px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+    #prompt-box .topic-tag {
+      display: inline-block; background: var(--rose); color: #8B2E4E;
+      padding: 3px 12px; border-radius: 20px; font-size: 11px;
+      margin-bottom: 6px; font-weight: 700; letter-spacing: 0.5px;
+    }
+    #prompt-box .goal-text {
+      font-size: 12px; color: var(--ink-soft); font-weight: 600;
+      margin-top: 6px; font-style: italic;
+    }
+    #prompt-box .competence-tag {
+      display: inline-block; margin-top: 6px;
+      padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #fff;
+    }
+    .comp-linguistic { background: #7EB3E7; }
+    .comp-pragmatic  { background: #C8A4E8; }
+    .comp-sociolinguistic { background: #F0B988; }
+
+    #speak-btn {
+      position: absolute; right: 8px; top: 8px;
+      background: var(--sky); color: var(--ink); border: none;
+      width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+      font-size: 16px; box-shadow: 0 2px 8px rgba(95, 103, 165, 0.18);
+      transition: transform 0.15s ease;
+    }
+    #speak-btn:active { transform: scale(0.9); }
+
+    /* ========== FEEDBACK ========== */
+    #feedback {
+      position: absolute; top: 45%; left: 50%;
+      transform: translateX(-50%) scale(0);
+      background: rgba(255,255,255,0.95); color: var(--ink);
+      padding: 14px 28px; border-radius: 30px;
+      font-family: 'Baloo 2', sans-serif; font-size: 22px; font-weight: 800;
+      opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      pointer-events: none; z-index: 15;
+      border: 3px solid var(--mint);
+      box-shadow: 0 12px 32px rgba(95, 103, 165, 0.25);
+    }
+    #feedback.show { transform: translateX(-50%) scale(1); opacity: 1; }
+
+    /* ========== TOUCH CONTROLS ========== */
+    #touch-controls {
+      position: absolute; bottom: 18px; left: 0; right: 0;
+      display: none; justify-content: space-between; padding: 0 18px;
+      z-index: 20; pointer-events: none;
+    }
+    .touch-cluster { display: flex; gap: 14px; pointer-events: auto; }
+    .touch-btn {
+      width: 84px; height: 84px;
+      background: rgba(255,255,255,0.70); border: 3px solid rgba(255,255,255,0.95);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: var(--ink);
+      touch-action: none; backdrop-filter: blur(8px);
+      transition: transform 0.1s ease, background 0.1s ease;
+      box-shadow: 0 8px 22px rgba(95, 103, 165, 0.18);
+      font-family: 'Baloo 2', sans-serif; font-weight: 800;
+    }
+    .touch-btn:active { transform: scale(0.88); background: var(--sun); }
+    .touch-btn.jump { background: rgba(184, 240, 214, 0.85); }
+    .touch-btn.jump:active { background: var(--mint); }
+
+    /* ========== OVERLAYS ========== */
+    .overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 50; color: var(--ink); text-align: center; padding: 24px;
+    }
+    .overlay h1 {
+      font-family: 'Baloo 2', sans-serif; font-weight: 800;
+      font-size: clamp(32px, 7vw, 56px); line-height: 1.05;
+      margin-bottom: 4px;
+      background: linear-gradient(90deg, #F0B988, var(--coral), #B07ED9);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .overlay h2 {
+      font-family: 'Baloo 2', sans-serif; font-weight: 800;
+      font-size: clamp(24px, 5vw, 36px); margin-bottom: 12px;
+      color: var(--ink);
+    }
+    .overlay p { font-size: 17px; color: var(--ink-soft); margin-bottom: 22px; font-weight: 500; max-width: 500px; }
+
+    /* Start screen */
+    #start-overlay {
+      background: radial-gradient(ellipse at top, var(--sky-2) 0%, var(--rose-2) 50%, var(--sun-2) 100%);
+    }
+    .hero-scene {
+      position: relative; width: 220px; height: 180px;
+      margin-bottom: 16px;
+      animation: bob 2.4s ease-in-out infinite;
+    }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    /* Name input */
+    #name-screen {
+      background: radial-gradient(ellipse at top, var(--rose-2) 0%, var(--sky-2) 100%);
+      display: none;
+    }
+    #name-input {
+      font-family: 'Baloo 2', sans-serif; font-weight: 700;
+      font-size: 22px; padding: 14px 20px; border-radius: 18px;
+      border: 3px solid var(--sky); background: #fff; color: var(--ink);
+      width: 90%; max-width: 340px; text-align: center; outline: none;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    #name-input:focus { border-color: var(--coral); transform: scale(1.02); }
+    .avatar-picker { display: flex; gap: 16px; margin: 16px 0 8px; }
+    .avatar-opt {
+      width: 84px; height: 84px; border-radius: 20px;
+      background: #fff; border: 3px solid transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(95, 103, 165, 0.12);
+    }
+    .avatar-opt.selected { border-color: var(--coral); transform: scale(1.08); background: var(--rose-2); }
+    .avatar-opt svg { width: 64px; height: 64px; }
+    .existing-players {
+      margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      max-width: 420px;
+    }
+    .player-chip {
+      background: rgba(255,255,255,0.85); color: var(--ink);
+      padding: 6px 14px; border-radius: 20px; cursor: pointer;
+      font-weight: 700; font-size: 14px; border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .player-chip:hover { border-color: var(--coral); background: #fff; }
+    .player-chip .del {
+      margin-left: 6px; color: var(--coral); opacity: 0.5;
+      font-weight: 900;
+    }
+    .player-chip .del:hover { opacity: 1; }
+
+    /* Grade select */
+    #grade-select {
+      background: radial-gradient(ellipse at top, var(--sun-2) 0%, var(--mint-2) 100%);
+      display: none; overflow-y: auto; padding: 30px 20px;
+      justify-content: flex-start;
+    }
+    .grade-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      max-width: 720px; margin: 14px 0 18px; width: 100%;
+    }
+    .grade-card {
+      background: #fff; border: 3px solid transparent;
+      padding: 16px 10px; border-radius: 20px; color: var(--ink);
+      cursor: pointer; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 6px 18px rgba(95, 103, 165, 0.10);
+      position: relative; overflow: hidden;
+    }
+    .grade-card:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 10px 24px rgba(95, 103, 165, 0.18); }
+    .grade-card.prek  { border-color: var(--rose); }
+    .grade-card.k     { border-color: var(--peach); }
+    .grade-card.g1    { border-color: var(--sun); }
+    .grade-card.g2    { border-color: var(--mint); }
+    .grade-card.g3    { border-color: var(--sky); }
+    .grade-card.g4    { border-color: var(--lav); }
+    .grade-card.g5    { border-color: #F4A8D1; }
+    .grade-card.g6    { border-color: #A8D0F4; }
+    .grade-card .emoji { font-size: 32px; display: block; margin-bottom: 4px; }
+    .grade-card .label { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 17px; display: block; }
+    .grade-card .sub { font-size: 11px; opacity: 0.7; font-weight: 500; }
+    .grade-card .cefr {
+      position: absolute; top: 6px; right: 6px;
+      background: var(--lav); color: #4A3F77;
+      padding: 1px 7px; border-radius: 8px; font-size: 9px; font-weight: 700;
+    }
+    .grade-card .progress-bar {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+      background: rgba(0,0,0,0.05);
+    }
+    .grade-card .progress-fill {
+      height: 100%; background: var(--grass); transition: width 0.4s ease;
+    }
+    .grade-card .progress-text {
+      font-size: 10px; color: var(--grass-d); font-weight: 700; margin-top: 4px;
+    }
+
+    /* End overlays */
+    #level-complete {
+      background: radial-gradient(ellipse at center, var(--mint-2) 0%, var(--sky-2) 100%);
+      display: none;
+    }
+    #level-complete .stars {
+      font-size: 56px; margin: 8px 0 16px; letter-spacing: 8px;
+      animation: starPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes starPop { from { transform: scale(0) rotate(-20deg); } to { transform: scale(1) rotate(0); } }
+
+    #game-over {
+      background: radial-gradient(ellipse at center, var(--rose-2) 0%, var(--sun-2) 100%);
+      display: none;
+    }
+
+    #grade-complete {
+      background: radial-gradient(ellipse at center, var(--sun-2) 0%, var(--rose-2) 50%, var(--lav) 100%);
+      display: none;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: 'Baloo 2', sans-serif; font-weight: 800;
+      border: none; padding: 14px 34px; border-radius: 30px;
+      font-size: 17px; color: #fff; cursor: pointer;
+      margin: 6px; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      box-shadow: 0 6px 16px rgba(95, 103, 165, 0.2);
+    }
+    .btn:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 10px 22px rgba(95, 103, 165, 0.28); }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary { background: linear-gradient(135deg, var(--coral) 0%, #F0B988 100%); color: #fff; font-size: 20px; padding: 16px 44px; }
+    .btn-mint    { background: linear-gradient(135deg, #7ACF7A 0%, #9EE0C5 100%); }
+    .btn-sky     { background: linear-gradient(135deg, #7EB3E7 0%, #A8D0F4 100%); }
+    .btn-rose    { background: linear-gradient(135deg, #FF8FA3 0%, #FFB8C8 100%); }
+    .btn-ghost   { background: rgba(255,255,255,0.6); color: var(--ink); border: 2px solid rgba(0,0,0,0.08); }
+
+    .btn-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+
+    /* Responsive */
+    @media (max-width: 720px) {
+      .grade-grid { grid-template-columns: repeat(2, 1fr); max-width: 380px; }
+      #prompt-box { font-size: 15px; padding: 11px 14px; top: 76px; }
+      #prompt-box .topic-tag { font-size: 10px; }
+      .hud-card { font-size: 13px; padding: 6px 10px; gap: 6px; border-radius: 14px; }
+      .hud-card .grade-pill { font-size: 10px; padding: 2px 7px; }
+      .hud-card .name { max-width: 80px; }
+      .touch-btn { width: 78px; height: 78px; font-size: 32px; }
+      .overlay p { font-size: 15px; margin-bottom: 16px; }
+      #level-complete .stars { font-size: 44px; letter-spacing: 6px; }
+      .avatar-opt { width: 74px; height: 74px; }
+      .avatar-opt svg { width: 56px; height: 56px; }
+    }
+    @media (max-width: 420px) {
+      .grade-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .grade-card { padding: 12px 6px; border-radius: 16px; }
+      .grade-card .emoji { font-size: 26px; }
+      .grade-card .label { font-size: 15px; }
+      .btn { font-size: 15px; padding: 11px 24px; }
+      .btn-primary { font-size: 17px; padding: 13px 32px; }
+      .touch-btn { width: 70px; height: 70px; font-size: 28px; }
+    }
+    /* Landscape tablet */
+    @media (min-width: 720px) and (orientation: landscape) {
+      #game-container { aspect-ratio: 16/9; max-height: 100vh; max-height: 100dvh; }
+    }
+
+    .confetti-layer {
+      position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-card">
+        <span class="stat"><span class="lives" id="lives-display">❤️❤️❤️</span></span>
+        <span class="stat">🪙 <span class="coins-val" id="coins-display">0</span></span>
+        <span class="stat">⭐ <span class="stars-val" id="stars-display">0</span></span>
+      </div>
+      <div id="top-actions">
+        <div class="icon-btn" id="mute-btn" title="Silenciar">🔊</div>
+        <div class="icon-btn" id="home-btn" title="Menú">🏠</div>
+      </div>
+      <div class="hud-card" style="margin-left: auto;">
+        <span class="name" id="player-name">Player</span>
+        <span class="grade-pill" id="grade-pill">Pre-K</span>
+        <span class="level-progress" id="level-display">Q 1/16</span>
+      </div>
+    </div>
+
+    <!-- Prompt box -->
+    <div id="prompt-box">
+      <div class="topic-tag" id="topic-display">Topic</div>
+      <div id="prompt-text">Loading...</div>
+      <div class="goal-text" id="goal-text">Goal:</div>
+      <div class="competence-tag comp-linguistic" id="comp-tag">Linguistic</div>
+      <button id="speak-btn" title="Listen">🔊</button>
+    </div>
+
+    <!-- Feedback -->
+    <div id="feedback"></div>
+
+    <!-- Touch controls -->
+    <div id="touch-controls">
+      <div class="touch-cluster">
+        <div class="touch-btn" id="btn-left" data-testid="btn-left">←</div>
+        <div class="touch-btn" id="btn-right" data-testid="btn-right">→</div>
+      </div>
+      <div class="touch-cluster">
+        <div class="touch-btn jump" id="btn-jump" data-testid="btn-jump">↑</div>
+      </div>
+    </div>
+
+    <!-- START OVERLAY -->
+    <div id="start-overlay" class="overlay">
+      <div class="hero-scene" id="hero-scene">
+        <svg viewBox="0 0 220 180" width="220" height="180">
+          <!-- Cloud -->
+          <ellipse cx="40" cy="60" rx="30" ry="16" fill="#fff" opacity="0.85"/>
+          <ellipse cx="180" cy="40" rx="24" ry="12" fill="#fff" opacity="0.85"/>
+          <!-- Rainbow arc -->
+          <path d="M 30 140 A 80 80 0 0 1 190 140" stroke="#FFD1DC" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M 40 140 A 70 70 0 0 1 180 140" stroke="#FFF4B8" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M 50 140 A 60 60 0 0 1 170 140" stroke="#B8F0D6" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M 60 140 A 50 50 0 0 1 160 140" stroke="#B8E0F5" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <!-- Character body -->
+          <circle cx="110" cy="115" r="18" fill="#FFE0C2"/>
+          <!-- Hair -->
+          <path d="M 92 108 Q 90 94 110 92 Q 130 94 128 108 Q 128 100 120 98 Q 110 100 100 98 Q 92 100 92 108 Z" fill="#8B5A3C"/>
+          <!-- Eyes -->
+          <circle cx="104" cy="114" r="2.4" fill="#3A3A5A"/>
+          <circle cx="116" cy="114" r="2.4" fill="#3A3A5A"/>
+          <!-- Smile -->
+          <path d="M 104 121 Q 110 125 116 121" stroke="#3A3A5A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <!-- Body -->
+          <rect x="98" y="130" width="24" height="26" rx="6" fill="#FF8FA3"/>
+          <!-- Legs -->
+          <rect x="100" y="152" width="8" height="14" rx="3" fill="#7EB3E7"/>
+          <rect x="112" y="152" width="8" height="14" rx="3" fill="#7EB3E7"/>
+          <!-- Backpack -->
+          <rect x="91" y="132" width="8" height="18" rx="3" fill="#D4C5F9"/>
+        </svg>
+      </div>
+      <h1>English Adventure</h1>
+      <p>Jump, run and learn English! <br>Grades Pre-K to 6</p>
+      <button class="btn btn-primary" id="start-btn" data-testid="start-btn">START ▶</button>
+    </div>
+
+    <!-- NAME SCREEN -->
+    <div id="name-screen" class="overlay">
+      <h2>What's your name? 🎒</h2>
+      <p>Your progress will be saved here on this computer.</p>
+      <div class="avatar-picker" id="avatar-picker">
+        <div class="avatar-opt selected" data-avatar="boy" data-testid="avatar-boy">
+          <svg viewBox="0 0 80 80"><circle cx="40" cy="34" r="14" fill="#FFE0C2"/><path d="M 27 32 Q 26 20 40 18 Q 54 20 53 32 Q 52 24 45 22 Q 40 24 35 22 Q 28 24 27 32 Z" fill="#8B5A3C"/><circle cx="35" cy="34" r="2" fill="#3A3A5A"/><circle cx="45" cy="34" r="2" fill="#3A3A5A"/><path d="M 35 40 Q 40 43 45 40" stroke="#3A3A5A" stroke-width="1.4" fill="none" stroke-linecap="round"/><rect x="30" y="48" width="20" height="22" rx="5" fill="#7EB3E7"/></svg>
+        </div>
+        <div class="avatar-opt" data-avatar="girl" data-testid="avatar-girl">
+          <svg viewBox="0 0 80 80"><circle cx="40" cy="34" r="14" fill="#FFE0C2"/><path d="M 26 34 Q 22 20 40 16 Q 58 20 54 34 L 54 42 Q 50 34 40 34 Q 30 34 26 42 Z" fill="#4A3F77"/><circle cx="35" cy="35" r="2" fill="#3A3A5A"/><circle cx="45" cy="35" r="2" fill="#3A3A5A"/><circle cx="30" cy="40" r="2" fill="#FFB8C8"/><circle cx="50" cy="40" r="2" fill="#FFB8C8"/><path d="M 35 42 Q 40 45 45 42" stroke="#3A3A5A" stroke-width="1.4" fill="none" stroke-linecap="round"/><rect x="30" y="48" width="20" height="22" rx="5" fill="#FF8FA3"/></svg>
+        </div>
+        <div class="avatar-opt" data-avatar="cat" data-testid="avatar-cat">
+          <svg viewBox="0 0 80 80"><path d="M 25 30 L 30 18 L 36 28 Z" fill="#C8A4E8"/><path d="M 55 30 L 50 18 L 44 28 Z" fill="#C8A4E8"/><circle cx="40" cy="38" r="16" fill="#D4C5F9"/><circle cx="34" cy="36" r="2.2" fill="#3A3A5A"/><circle cx="46" cy="36" r="2.2" fill="#3A3A5A"/><path d="M 36 44 L 40 46 L 44 44" stroke="#3A3A5A" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M 40 42 L 40 45" stroke="#3A3A5A" stroke-width="1.4" stroke-linecap="round"/><rect x="30" y="52" width="20" height="18" rx="6" fill="#B8F0D6"/></svg>
+        </div>
+      </div>
+      <input type="text" id="name-input" placeholder="Type your name..." maxlength="16" data-testid="name-input"/>
+      <div class="btn-row" style="margin-top: 12px;">
+        <button class="btn btn-primary" id="name-continue-btn" data-testid="name-continue-btn">Let's Go! 🚀</button>
+        <button class="btn btn-ghost" id="name-back-btn">← Back</button>
+      </div>
+      <div class="existing-players" id="existing-players"></div>
+    </div>
+
+    <!-- GRADE SELECT -->
+    <div id="grade-select" class="overlay">
+      <h2 id="grade-greeting">Choose Your Grade 🎓</h2>
+      <p style="margin-bottom: 10px;">Pick a grade to start the adventure</p>
+      <div class="grade-grid" id="grade-grid"></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="grade-back-btn">← Change Player</button>
+      </div>
+    </div>
+
+    <!-- LEVEL COMPLETE -->
+    <div id="level-complete" class="overlay">
+      <h2 id="lc-title">Level Complete! 🎉</h2>
+      <div class="stars" id="lc-stars">⭐⭐⭐</div>
+      <p id="lc-stats">🪙 +0 Coins</p>
+      <div class="btn-row">
+        <button class="btn btn-mint" id="next-btn" data-testid="next-btn">Next Level ➡</button>
+        <button class="btn btn-sky" id="retry-btn-1" data-testid="retry-btn-1">Retry 🔄</button>
+      </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div id="game-over" class="overlay">
+      <h2 style="color: var(--coral);">Out of Hearts 💔</h2>
+      <p>Don't worry! Try again and you'll do great.</p>
+      <div class="btn-row">
+        <button class="btn btn-rose" id="retry-btn-2" data-testid="retry-btn-2">Try Again 💪</button>
+        <button class="btn btn-ghost" id="change-grade-btn">Change Grade</button>
+      </div>
+    </div>
+
+    <!-- GRADE COMPLETE -->
+    <div id="grade-complete" class="overlay">
+      <div style="font-size: 64px; animation: starPop 0.8s;">🏆</div>
+      <h1 style="margin-top: 8px;">You Did It!</h1>
+      <p id="gc-summary">You completed all the questions!</p>
+      <div class="btn-row">
+        <button class="btn btn-mint" id="gc-next-btn">Another Grade 🎓</button>
+        <button class="btn btn-ghost" id="gc-home-btn">Home 🏠</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ================= CURRICULUM DATA (all 8 grades, 128 questions) ================= */
+const CURRICULUM_DATA = {
+  "prek": {
+    "grade_id": "Pre-K",
+    "cefr_level": "Pre A1.1",
+    "scenarios": [
+      {
+        "id": 1,
+        "name": "Meeting New Friends",
+        "levels": [
+          {
+            "theme_name": "Meeting My Friends",
+            "goal": "Recognize basic sounds, words and phrases with support"
+          },
+          {
+            "theme_name": "Saying Please and Thank You",
+            "goal": "Respond to simple instructions with visual support"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Exploring Our Classroom",
+        "levels": [
+          {
+            "theme_name": "Things in My Classroom",
+            "goal": "Identify school objects"
+          },
+          {
+            "theme_name": "Colors in My Classroom",
+            "goal": "Recognize basic color words"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Me and My Family",
+        "levels": [
+          {
+            "theme_name": "This Is Me!",
+            "goal": "Recognize words related to personal identity"
+          },
+          {
+            "theme_name": "My Family",
+            "goal": "Recognize words for family members"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Let's Eat!",
+        "levels": [
+          {
+            "theme_name": "I Love Fruit!",
+            "goal": "Identify common fruits"
+          },
+          {
+            "theme_name": "I Eat Vegetables!",
+            "goal": "Identify common vegetables"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Numbers Around Me",
+        "levels": [
+          {
+            "theme_name": "Let's Count to Five!",
+            "goal": "Recognize numbers 1-5"
+          },
+          {
+            "theme_name": "How Many?",
+            "goal": "Basic quantity recognition"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Fun with Letters",
+        "levels": [
+          {
+            "theme_name": "The A-B-Cs",
+            "goal": "Letter recognition awareness"
+          },
+          {
+            "theme_name": "Apple, Banana, Coconut",
+            "goal": "Recognize initial sounds"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Inside My School!",
+        "levels": [
+          {
+            "theme_name": "My Teacher!",
+            "goal": "Recognize roles in school"
+          },
+          {
+            "theme_name": "Time for Recess!",
+            "goal": "Recognize school activity words"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Panama's Plants and Animals",
+        "levels": [
+          {
+            "theme_name": "It's a Plant",
+            "goal": "Identify basic nature elements"
+          },
+          {
+            "theme_name": "It's an Animal",
+            "goal": "Identify local animals"
+          }
+        ]
+      }
+    ],
+    "challenges": [
+      {
+        "question_id": 1,
+        "scenario_id": 1,
+        "question_text": "The teacher says: 'STAND UP!' Jump on the action.",
+        "options": [
+          "Sit down",
+          "Stand up",
+          "Run"
+        ],
+        "correct_answer": "Stand up",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_tpr_stand",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 2,
+        "scenario_id": 1,
+        "question_text": "What do you say when you get a gift?",
+        "options": [
+          "Hello",
+          "Please",
+          "Thank you"
+        ],
+        "correct_answer": "Thank you",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_gift",
+        "standard_alignment": "PreA1.1.S1"
+      },
+      {
+        "question_id": 3,
+        "scenario_id": 2,
+        "question_text": "Jump on the BLUE PENCIL.",
+        "options": [
+          "Red pencil",
+          "Blue pencil",
+          "Yellow star"
+        ],
+        "correct_answer": "Blue pencil",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_pencil_blue",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 4,
+        "scenario_id": 2,
+        "question_text": "Jump on the SCHOOL OBJECT.",
+        "options": [
+          "Pencil",
+          "Tree",
+          "Lion"
+        ],
+        "correct_answer": "Pencil",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_pencil",
+        "standard_alignment": "PreA1.1.R1"
+      },
+      {
+        "question_id": 5,
+        "scenario_id": 3,
+        "question_text": "Jump on the picture of MOM.",
+        "options": [
+          "Mom",
+          "Dad",
+          "Brother"
+        ],
+        "correct_answer": "Mom",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_family_mom",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 6,
+        "scenario_id": 3,
+        "question_text": "Is this a boy? (Point to Self)",
+        "options": [
+          "Yes",
+          "No",
+          "Blue"
+        ],
+        "correct_answer": "Yes",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_boy_avatar",
+        "standard_alignment": "PreA1.1.S1"
+      },
+      {
+        "question_id": 7,
+        "scenario_id": 4,
+        "question_text": "Jump on the FRUIT.",
+        "options": [
+          "Apple",
+          "Carrot",
+          "Chair"
+        ],
+        "correct_answer": "Apple",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_apple",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 8,
+        "scenario_id": 4,
+        "question_text": "The color of the BROCCOLI is...",
+        "options": [
+          "Red",
+          "Green",
+          "Pink"
+        ],
+        "correct_answer": "Green",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_broccoli",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 9,
+        "scenario_id": 5,
+        "question_text": "Jump on number THREE.",
+        "options": [
+          "1",
+          "3",
+          "5"
+        ],
+        "correct_answer": "3",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_num_3",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 10,
+        "scenario_id": 5,
+        "question_text": "How many stars? (Visual: 2 stars)",
+        "options": [
+          "One",
+          "Two",
+          "Four"
+        ],
+        "correct_answer": "Two",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_stars_2",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 11,
+        "scenario_id": 6,
+        "question_text": "Which letter is 'A'?",
+        "options": [
+          "B",
+          "C",
+          "A"
+        ],
+        "correct_answer": "A",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_letter_a",
+        "standard_alignment": "PreA1.1.R1"
+      },
+      {
+        "question_id": 12,
+        "scenario_id": 6,
+        "question_text": "Apple, Banana, ____ (Initial sound check)",
+        "options": [
+          "Coconut",
+          "Dog",
+          "Elephant"
+        ],
+        "correct_answer": "Coconut",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_abc_group",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 13,
+        "scenario_id": 7,
+        "question_text": "Jump on the TEACHER.",
+        "options": [
+          "Teacher",
+          "Cat",
+          "Sun"
+        ],
+        "correct_answer": "Teacher",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_teacher",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 14,
+        "scenario_id": 7,
+        "question_text": "What do we do at RECESS?",
+        "options": [
+          "Sleep",
+          "Play",
+          "Read"
+        ],
+        "correct_answer": "Play",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_recess",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 15,
+        "scenario_id": 8,
+        "question_text": "The cat says...",
+        "options": [
+          "Meow",
+          "Woof",
+          "Moo"
+        ],
+        "correct_answer": "Meow",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_cat_audio",
+        "standard_alignment": "PreA1.1.L1"
+      },
+      {
+        "question_id": 16,
+        "scenario_id": 8,
+        "question_text": "Is a tree a PLANT?",
+        "options": [
+          "Yes",
+          "No",
+          "Yellow"
+        ],
+        "correct_answer": "Yes",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_tree",
+        "standard_alignment": "PreA1.1.L1"
+      }
+    ]
+  },
+  "k": {
+    "grade_id": "Kinder",
+    "cefr_level": "Pre A1.2",
+    "scenarios": [
+      {
+        "id": 1,
+        "name": "It's a School Day!",
+        "levels": [
+          {
+            "theme_name": "Let's Listen!",
+            "goal": "Recognize familiar spoken sounds and phrases"
+          },
+          {
+            "theme_name": "Stand Up!",
+            "goal": "Respond to commands with support"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Our Routines",
+        "levels": [
+          {
+            "theme_name": "First, I Sit Down",
+            "goal": "Follow simple classroom sequences"
+          },
+          {
+            "theme_name": "Pick It Up!",
+            "goal": "Identify classroom tidy actions"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Hold Up Ten Fingers!",
+        "levels": [
+          {
+            "theme_name": "I Can Count!",
+            "goal": "Identify numbers up to 10"
+          },
+          {
+            "theme_name": "All the Pencils!",
+            "goal": "Count school objects"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Where Is It?",
+        "levels": [
+          {
+            "theme_name": "Where Is Your Book?",
+            "goal": "Identify locations with prepositions"
+          },
+          {
+            "theme_name": "Go to the Window",
+            "goal": "Respond to spatial directions"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "What's That Sound?",
+        "levels": [
+          {
+            "theme_name": "The Cat Says Meow",
+            "goal": "Distinguish environmental sounds"
+          },
+          {
+            "theme_name": "That's a Rooster!",
+            "goal": "Distinguish animal sounds"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Let's Dance!",
+        "levels": [
+          {
+            "theme_name": "Move Around",
+            "goal": "Follow coordinated physical actions"
+          },
+          {
+            "theme_name": "One Step In, Two Steps Out!",
+            "goal": "Follow directional movement commands"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "I'm Happy",
+        "levels": [
+          {
+            "theme_name": "I'm Excited!",
+            "goal": "Identify basic emotions"
+          },
+          {
+            "theme_name": "How Are You?",
+            "goal": "Respond to basic social welfare questions"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "I Like School!",
+        "levels": [
+          {
+            "theme_name": "I Like Games!",
+            "goal": "Express basic preferences"
+          },
+          {
+            "theme_name": "I Like Math!",
+            "goal": "Identify basic school subjects"
+          }
+        ]
+      }
+    ],
+    "challenges": [
+      {
+        "question_id": 1,
+        "scenario_id": 1,
+        "question_text": "Is the weather SUNNY or RAINING? (Visual: Sun)",
+        "options": [
+          "Sunny",
+          "Raining",
+          "Cold"
+        ],
+        "correct_answer": "Sunny",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_weather_sun",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 2,
+        "scenario_id": 1,
+        "question_text": "The teacher says: 'SIT DOWN!' Jump on the chair.",
+        "options": [
+          "Jump",
+          "Run",
+          "Sit down"
+        ],
+        "correct_answer": "Sit down",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_tpr_sit",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 3,
+        "scenario_id": 2,
+        "question_text": "Order: First I ____ then I play.",
+        "options": [
+          "Sit down",
+          "Fly",
+          "Swim"
+        ],
+        "correct_answer": "Sit down",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_routine_order",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 4,
+        "scenario_id": 2,
+        "question_text": "There's trash! 'PICK IT UP!'",
+        "options": [
+          "Leave it",
+          "Pick it up",
+          "Eat it"
+        ],
+        "correct_answer": "Pick it up",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_clean_classroom",
+        "standard_alignment": "PreA1.2.S1"
+      },
+      {
+        "question_id": 5,
+        "scenario_id": 3,
+        "question_text": "How many fingers in two hands?",
+        "options": [
+          "Five",
+          "Ten",
+          "Two"
+        ],
+        "correct_answer": "Ten",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_hands_ten",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 6,
+        "scenario_id": 3,
+        "question_text": "Jump on the number EIGHT.",
+        "options": [
+          "6",
+          "8",
+          "10"
+        ],
+        "correct_answer": "8",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_num_8",
+        "standard_alignment": "PreA1.2.R1"
+      },
+      {
+        "question_id": 7,
+        "scenario_id": 4,
+        "question_text": "Where is the book? (Visual: On table)",
+        "options": [
+          "On the table",
+          "In the bag",
+          "Under the sky"
+        ],
+        "correct_answer": "On the table",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_book_pos",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 8,
+        "scenario_id": 4,
+        "question_text": "Jump to the WINDOW.",
+        "options": [
+          "Door",
+          "Window",
+          "Floor"
+        ],
+        "correct_answer": "Window",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_classroom_window",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 9,
+        "scenario_id": 5,
+        "question_text": "Which animal says 'WOOF'?",
+        "options": [
+          "Cat",
+          "Dog",
+          "Bird"
+        ],
+        "correct_answer": "Dog",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_dog",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 10,
+        "scenario_id": 5,
+        "question_text": "That's a ROOSTER! What does it say?",
+        "options": [
+          "Meow",
+          "Moo",
+          "Cock-a-doodle-doo"
+        ],
+        "correct_answer": "Cock-a-doodle-doo",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_rooster",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 11,
+        "scenario_id": 6,
+        "question_text": "Jump ONE step ____.",
+        "options": [
+          "In",
+          "Up",
+          "Blue"
+        ],
+        "correct_answer": "In",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_move_in",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 12,
+        "scenario_id": 6,
+        "question_text": "Move your ____ (Dance move).",
+        "options": [
+          "Body",
+          "House",
+          "Car"
+        ],
+        "correct_answer": "Body",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_dance",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 13,
+        "scenario_id": 7,
+        "question_text": "I am ____ (Visual: Smiling face).",
+        "options": [
+          "Sad",
+          "Happy",
+          "Angry"
+        ],
+        "correct_answer": "Happy",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_face_happy",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 14,
+        "scenario_id": 7,
+        "question_text": "How are you? — I am ____.",
+        "options": [
+          "Fine",
+          "Red",
+          "Ten"
+        ],
+        "correct_answer": "Fine",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_social_fine",
+        "standard_alignment": "PreA1.2.S1"
+      },
+      {
+        "question_id": 15,
+        "scenario_id": 8,
+        "question_text": "I like ____ (Visual: Game controller).",
+        "options": [
+          "Math",
+          "Games",
+          "Eating"
+        ],
+        "correct_answer": "Games",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_controller",
+        "standard_alignment": "PreA1.2.L1"
+      },
+      {
+        "question_id": 16,
+        "scenario_id": 8,
+        "question_text": "Jump on the MATH symbol.",
+        "options": [
+          "+",
+          "A",
+          "Sun"
+        ],
+        "correct_answer": "+",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_math_plus",
+        "standard_alignment": "PreA1.2.R1"
+      }
+    ]
+  },
+  "1st": {
+    "grade_id": "1st Grade",
+    "cefr_level": "Pre A1.3",
+    "scenarios": [
+      {
+        "id": 1,
+        "name": "All Week Long!",
+        "levels": [
+          {
+            "theme_name": "Today Is Tuesday!",
+            "goal": "Identify days of the week"
+          },
+          {
+            "theme_name": "It's the Weekend",
+            "goal": "Recognize days for leisure"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Nice Weather Today!",
+        "levels": [
+          {
+            "theme_name": "It's Sunny!",
+            "goal": "Identify basic weather states"
+          },
+          {
+            "theme_name": "It's Raining",
+            "goal": "Identify weather-related actions"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Colors in Our World",
+        "levels": [
+          {
+            "theme_name": "That's a Purple Flower",
+            "goal": "Associate colors with nature"
+          },
+          {
+            "theme_name": "It's an Orange Cat",
+            "goal": "Associate colors with animals"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "My Family and I",
+        "levels": [
+          {
+            "theme_name": "It's My Family!",
+            "goal": "Identify family members"
+          },
+          {
+            "theme_name": "She Is My Mom!",
+            "goal": "Use pronouns for family members"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Colors of Things that Go",
+        "levels": [
+          {
+            "theme_name": "That's a Blue Bus",
+            "goal": "Identify transportation by color"
+          },
+          {
+            "theme_name": "That's a Red Bike",
+            "goal": "Identify transportation by color"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Shapes Around Us",
+        "levels": [
+          {
+            "theme_name": "I See a Rectangle",
+            "goal": "Identify geometric shapes in environment"
+          },
+          {
+            "theme_name": "That Is a Circle",
+            "goal": "Identify geometric shapes in environment"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Shapes on Our Plates",
+        "levels": [
+          {
+            "theme_name": "It's a Square Cracker",
+            "goal": "Identify shapes in food"
+          },
+          {
+            "theme_name": "It's a Round Orange",
+            "goal": "Identify shapes in food"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "It's Our Garden!",
+        "levels": [
+          {
+            "theme_name": "The Pink Flowers!",
+            "goal": "Describe nature using color/adjectives"
+          },
+          {
+            "theme_name": "A Tall Tree!",
+            "goal": "Identify size adjectives"
+          }
+        ]
+      }
+    ],
+    "challenges": [
+      {
+        "question_id": 1,
+        "scenario_id": 1,
+        "question_text": "What day is after Monday?",
+        "options": [
+          "Tuesday",
+          "Sunday",
+          "Friday"
+        ],
+        "correct_answer": "Tuesday",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_cal_tue",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 2,
+        "scenario_id": 1,
+        "question_text": "Jump on the WEEKEND day.",
+        "options": [
+          "Monday",
+          "Saturday",
+          "Wednesday"
+        ],
+        "correct_answer": "Saturday",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_cal_sat",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 3,
+        "scenario_id": 2,
+        "question_text": "It is RAINING. Jump on the object you need.",
+        "options": [
+          "Sunglasses",
+          "Umbrella",
+          "Hat"
+        ],
+        "correct_answer": "Umbrella",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_rain_acc",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 4,
+        "scenario_id": 2,
+        "question_text": "Jump on the SUNNY day icon.",
+        "options": [
+          "Sun",
+          "Cloud",
+          "Snow"
+        ],
+        "correct_answer": "Sun",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_weather_sun",
+        "standard_alignment": "PreA1.3.R1"
+      },
+      {
+        "question_id": 5,
+        "scenario_id": 3,
+        "question_text": "Jump on the PURPLE flower.",
+        "options": [
+          "Red flower",
+          "Purple flower",
+          "Yellow sun"
+        ],
+        "correct_answer": "Purple flower",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_flower_purple",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 6,
+        "scenario_id": 3,
+        "question_text": "The cat is ____ (Visual: Orange color).",
+        "options": [
+          "Blue",
+          "Orange",
+          "Pink"
+        ],
+        "correct_answer": "Orange",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_cat_orange",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 7,
+        "scenario_id": 4,
+        "question_text": "Who is she? (Visual: Woman with child)",
+        "options": [
+          "Dad",
+          "Brother",
+          "Mom"
+        ],
+        "correct_answer": "Mom",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_mom",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 8,
+        "scenario_id": 4,
+        "question_text": "Jump on the word: FAMILY.",
+        "options": [
+          "Friend",
+          "Family",
+          "Teacher"
+        ],
+        "correct_answer": "Family",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_text_family",
+        "standard_alignment": "PreA1.3.R1"
+      },
+      {
+        "question_id": 9,
+        "scenario_id": 5,
+        "question_text": "Jump on the BLUE BUS.",
+        "options": [
+          "Blue bus",
+          "Red bike",
+          "Green car"
+        ],
+        "correct_answer": "Blue bus",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_bus_blue",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 10,
+        "scenario_id": 5,
+        "question_text": "The BIKE is ____ (Visual: Red color).",
+        "options": [
+          "Red",
+          "Blue",
+          "Black"
+        ],
+        "correct_answer": "Red",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_bike_red",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 11,
+        "scenario_id": 6,
+        "question_text": "Jump on the RECTANGLE (Visual: Door).",
+        "options": [
+          "Circle",
+          "Rectangle",
+          "Triangle"
+        ],
+        "correct_answer": "Rectangle",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_door",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 12,
+        "scenario_id": 6,
+        "question_text": "The sun is a ____ shape.",
+        "options": [
+          "Circle",
+          "Square",
+          "Rectangle"
+        ],
+        "correct_answer": "Circle",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sun_shape",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 13,
+        "scenario_id": 7,
+        "question_text": "The cracker is a ____ shape.",
+        "options": [
+          "Square",
+          "Round",
+          "Pink"
+        ],
+        "correct_answer": "Square",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_cracker",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 14,
+        "scenario_id": 7,
+        "question_text": "Jump on the ROUND orange.",
+        "options": [
+          "Square orange",
+          "Round orange",
+          "Blue orange"
+        ],
+        "correct_answer": "Round orange",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_orange_fruit",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 15,
+        "scenario_id": 8,
+        "question_text": "The tree is ____ (Visual: Tall height).",
+        "options": [
+          "Short",
+          "Tall",
+          "Pink"
+        ],
+        "correct_answer": "Tall",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_tree_tall",
+        "standard_alignment": "PreA1.3.L1"
+      },
+      {
+        "question_id": 16,
+        "scenario_id": 8,
+        "question_text": "Jump on the PINK flower.",
+        "options": [
+          "Pink flower",
+          "Green tree",
+          "Blue sky"
+        ],
+        "correct_answer": "Pink flower",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_flower_pink",
+        "standard_alignment": "PreA1.3.L1"
+      }
+    ]
+  },
+  "2nd": {
+    "grade_id": "2nd Grade",
+    "cefr_level": "Pre A1.4",
+    "scenarios": [
+      {
+        "id": 1,
+        "name": "School Days",
+        "levels": [
+          {
+            "theme_name": "Yesterday Was Wednesday",
+            "goal": "Demonstrate comprehension of time sequencing"
+          },
+          {
+            "theme_name": "Today Is Friday!",
+            "goal": "Identify current day in sequence"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "School Life Adventures",
+        "levels": [
+          {
+            "theme_name": "That's a Big Book!",
+            "goal": "Describe objects using size adjectives"
+          },
+          {
+            "theme_name": "That's a Small, Brown Bag",
+            "goal": "Describe objects using size and color"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "All About the Weather",
+        "levels": [
+          {
+            "theme_name": "A Perfect Day!",
+            "goal": "Describe personal weather preferences"
+          },
+          {
+            "theme_name": "Dress for the Weather",
+            "goal": "Associate clothing with climate"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "All About My Body",
+        "levels": [
+          {
+            "theme_name": "Head to Toes!",
+            "goal": "Identify body parts"
+          },
+          {
+            "theme_name": "Hats and Shoes!",
+            "goal": "Associate clothes with body parts"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Exploring My Community",
+        "levels": [
+          {
+            "theme_name": "It's the Park!",
+            "goal": "Identify community locations"
+          },
+          {
+            "theme_name": "It's the Market!",
+            "goal": "Identify community locations"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Discovering Nature's Wonders",
+        "levels": [
+          {
+            "theme_name": "It's the Rainforest",
+            "goal": "Identify environment types"
+          },
+          {
+            "theme_name": "It's a Slow, Furry Sloth!",
+            "goal": "Describe animals using physical traits"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Fun Outdoors!",
+        "levels": [
+          {
+            "theme_name": "I Love to Run!",
+            "goal": "Express favorite physical actions"
+          },
+          {
+            "theme_name": "I Like to Swim",
+            "goal": "Express favorite physical actions"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "It's Festival Season",
+        "levels": [
+          {
+            "theme_name": "Look at the Fireworks!",
+            "goal": "Identify cultural celebration elements"
+          },
+          {
+            "theme_name": "Food I Eat During a Celebration",
+            "goal": "Identify traditional Panamanian food"
+          }
+        ]
+      }
+    ],
+    "challenges": [
+      {
+        "question_id": 1,
+        "scenario_id": 1,
+        "question_text": "If today is Friday, yesterday was...",
+        "options": [
+          "Thursday",
+          "Saturday",
+          "Monday"
+        ],
+        "correct_answer": "Thursday",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_cal_seq",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 2,
+        "scenario_id": 1,
+        "question_text": "Jump on TODAY'S day: Friday.",
+        "options": [
+          "Friday",
+          "Tuesday",
+          "Sunday"
+        ],
+        "correct_answer": "Friday",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_text_friday",
+        "standard_alignment": "PreA1.4.R1"
+      },
+      {
+        "question_id": 3,
+        "scenario_id": 2,
+        "question_text": "The book is ____ (Visual: Large scale).",
+        "options": [
+          "Small",
+          "Big",
+          "Red"
+        ],
+        "correct_answer": "Big",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_book_big",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 4,
+        "scenario_id": 2,
+        "question_text": "Jump on the SMALL, BROWN bag.",
+        "options": [
+          "Big green bag",
+          "Small brown bag",
+          "Red book"
+        ],
+        "correct_answer": "Small brown bag",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_bag_sm_br",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 5,
+        "scenario_id": 3,
+        "question_text": "It is sunny. I wear a ____.",
+        "options": [
+          "Hat",
+          "Coat",
+          "Umbrella"
+        ],
+        "correct_answer": "Hat",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sun_wear",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 6,
+        "scenario_id": 3,
+        "question_text": "A perfect day for me is ____.",
+        "options": [
+          "Sunny",
+          "Broken",
+          "Angry"
+        ],
+        "correct_answer": "Sunny",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_weather_pref",
+        "standard_alignment": "PreA1.4.S1"
+      },
+      {
+        "question_id": 7,
+        "scenario_id": 4,
+        "question_text": "What goes on your FEET?",
+        "options": [
+          "Hats",
+          "Shoes",
+          "Gloves"
+        ],
+        "correct_answer": "Shoes",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_feet_shoes",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 8,
+        "scenario_id": 4,
+        "question_text": "Jump on the HEAD.",
+        "options": [
+          "Toes",
+          "Hands",
+          "Head"
+        ],
+        "correct_answer": "Head",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_anatomy_head",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 9,
+        "scenario_id": 5,
+        "question_text": "Where do you go to play?",
+        "options": [
+          "The Park",
+          "The Hospital",
+          "The Bank"
+        ],
+        "correct_answer": "The Park",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_park",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 10,
+        "scenario_id": 5,
+        "question_text": "We buy food at the ____.",
+        "options": [
+          "School",
+          "Market",
+          "Sky"
+        ],
+        "correct_answer": "Market",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_market",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 11,
+        "scenario_id": 6,
+        "question_text": "The SLOTH is ____ (Visual: Movement speed).",
+        "options": [
+          "Fast",
+          "Slow",
+          "Blue"
+        ],
+        "correct_answer": "Slow",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sloth_slow",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 12,
+        "scenario_id": 6,
+        "question_text": "The rainforest is ____ (Visual: Rain/Water).",
+        "options": [
+          "Wet",
+          "Dry",
+          "Sandy"
+        ],
+        "correct_answer": "Wet",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_rainforest",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 13,
+        "scenario_id": 7,
+        "question_text": "I like to ____ in the pool.",
+        "options": [
+          "Swim",
+          "Run",
+          "Jump"
+        ],
+        "correct_answer": "Swim",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_swimming",
+        "standard_alignment": "PreA1.4.S1"
+      },
+      {
+        "question_id": 14,
+        "scenario_id": 7,
+        "question_text": "Jump on the RUNNING child.",
+        "options": [
+          "Sleeping boy",
+          "Running girl",
+          "Reading boy"
+        ],
+        "correct_answer": "Running girl",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_run_action",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 15,
+        "scenario_id": 8,
+        "question_text": "Panama's traditional soup is ____.",
+        "options": [
+          "Sancocho",
+          "Pizza",
+          "Pasta"
+        ],
+        "correct_answer": "Sancocho",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sancocho",
+        "standard_alignment": "PreA1.4.L1"
+      },
+      {
+        "question_id": 16,
+        "scenario_id": 8,
+        "question_text": "Jump on the FIREWORKS.",
+        "options": [
+          "Clouds",
+          "Fireworks",
+          "Rain"
+        ],
+        "correct_answer": "Fireworks",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_fireworks",
+        "standard_alignment": "PreA1.4.L1"
+      }
+    ]
+  },
+  "3rd": {
+    "grade_id": "3rd Grade",
+    "cefr_level": "A1.1",
+    "scenarios": [
+      {
+        "id": 1,
+        "name": "Places I Can Go",
+        "levels": [
+          {
+            "theme_name": "I'm at School",
+            "goal": "Recognize main points of conversations in school context"
+          },
+          {
+            "theme_name": "I'm at the Market",
+            "goal": "Recognize phrases for shopping contexts"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "A Polite Request",
+        "levels": [
+          {
+            "theme_name": "Can I Have a Pencil?",
+            "goal": "Ask for things using formulaic expressions"
+          },
+          {
+            "theme_name": "Sorry, I Can't Help You",
+            "goal": "Respond to requests using basic language"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Discovering Our Classroom",
+        "levels": [
+          {
+            "theme_name": "What's in Your Bag?",
+            "goal": "Describe contents of personal items"
+          },
+          {
+            "theme_name": "The Book Is on the Table",
+            "goal": "Explain object locations clearly"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "This Beautiful Day",
+        "levels": [
+          {
+            "theme_name": "It's Sunny. I'm Happy!",
+            "goal": "Describe feelings related to weather"
+          },
+          {
+            "theme_name": "It's Raining! I Need an Umbrella",
+            "goal": "Connect weather to necessary items/actions"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Let's Go Shopping!",
+        "levels": [
+          {
+            "theme_name": "One, Two, Three Bananas!",
+            "goal": "Use plural nouns correctly"
+          },
+          {
+            "theme_name": "I Want Five Pineapples",
+            "goal": "Express shopping wants"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "I Can Connect with Nature!",
+        "levels": [
+          {
+            "theme_name": "I Can Relax and Listen",
+            "goal": "Describe sensory experiences"
+          },
+          {
+            "theme_name": "I'm Outside. I'm Happy!",
+            "goal": "Express emotional states in nature"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "It's Time to Eat",
+        "levels": [
+          {
+            "theme_name": "What's Your Favorite Food?",
+            "goal": "Ask and respond to preference questions"
+          },
+          {
+            "theme_name": "I Like Sancocho!",
+            "goal": "Identify and describe local food preferences"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "My Evening Routine",
+        "levels": [
+          {
+            "theme_name": "First, I Brush My Teeth",
+            "goal": "Sequence daily habits"
+          },
+          {
+            "theme_name": "I'm Sleepy. It's Bedtime",
+            "goal": "Identify time for rest routines"
+          }
+        ]
+      }
+    ],
+    "challenges": [
+      {
+        "question_id": 1,
+        "scenario_id": 1,
+        "question_text": "I'm at the ____ to buy fruit.",
+        "options": [
+          "Market",
+          "Park",
+          "Bank"
+        ],
+        "correct_answer": "Market",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_market_buy",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 2,
+        "scenario_id": 1,
+        "question_text": "Jump on the school library rule:",
+        "options": [
+          "Shout loud",
+          "Be quiet",
+          "Run fast"
+        ],
+        "correct_answer": "Be quiet",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_library_sign",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 3,
+        "scenario_id": 2,
+        "question_text": "Polite request: 'Can I ____ a pencil?'",
+        "options": [
+          "Have",
+          "Eat",
+          "Run"
+        ],
+        "correct_answer": "Have",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_pencil_req",
+        "standard_alignment": "A1.1.S1"
+      },
+      {
+        "question_id": 4,
+        "scenario_id": 2,
+        "question_text": "Mediation: A friend needs a pencil. You say:",
+        "options": [
+          "Here you go",
+          "No pencil",
+          "Go away"
+        ],
+        "correct_answer": "Here you go",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sharing",
+        "standard_alignment": "A1.1.M1"
+      },
+      {
+        "question_id": 5,
+        "scenario_id": 3,
+        "question_text": "What's in your bag? — I have three ____.",
+        "options": [
+          "Pencils",
+          "Pencil",
+          "Penciles"
+        ],
+        "correct_answer": "Pencils",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_bag_pencils",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 6,
+        "scenario_id": 3,
+        "question_text": "Jump on the book ON the table.",
+        "options": [
+          "Book in bag",
+          "Book on table",
+          "Book under chair"
+        ],
+        "correct_answer": "Book on table",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_book_pos_table",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 7,
+        "scenario_id": 4,
+        "question_text": "It is raining! I need a(n) ____.",
+        "options": [
+          "Sunglasses",
+          "Umbrella",
+          "Hat"
+        ],
+        "correct_answer": "Umbrella",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_rain_acc",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 8,
+        "scenario_id": 4,
+        "question_text": "It's sunny. How do you feel?",
+        "options": [
+          "Happy",
+          "Cold",
+          "Angry"
+        ],
+        "correct_answer": "Happy",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_face_happy_sun",
+        "standard_alignment": "A1.1.S1"
+      },
+      {
+        "question_id": 9,
+        "scenario_id": 5,
+        "question_text": "I want five ____ (Visual: Pineapples).",
+        "options": [
+          "Apple",
+          "Pineapples",
+          "Banana"
+        ],
+        "correct_answer": "Pineapples",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_pineapple_plural",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 10,
+        "scenario_id": 5,
+        "question_text": "Identify the syllable: BANANA.",
+        "options": [
+          "2",
+          "3",
+          "4"
+        ],
+        "correct_answer": "3",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_banana_syllable",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 11,
+        "scenario_id": 6,
+        "question_text": "I'm outside. I can ____ the birds.",
+        "options": [
+          "Hear",
+          "Eat",
+          "Read"
+        ],
+        "correct_answer": "Hear",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_nature_sounds",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 12,
+        "scenario_id": 6,
+        "question_text": "Nature mediation: Don't touch the nest! It is...",
+        "options": [
+          "Safe",
+          "Dangerous",
+          "Green"
+        ],
+        "correct_answer": "Dangerous",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_nest_warning",
+        "standard_alignment": "A1.1.M1"
+      },
+      {
+        "question_id": 13,
+        "scenario_id": 7,
+        "question_text": "My favorite food is ____.",
+        "options": [
+          "Sancocho",
+          "A pencil",
+          "Tuesday"
+        ],
+        "correct_answer": "Sancocho",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sancocho_bowl",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 14,
+        "scenario_id": 7,
+        "question_text": "Ask a friend: 'What's your ____ food?'",
+        "options": [
+          "Favorite",
+          "Color",
+          "Number"
+        ],
+        "correct_answer": "Favorite",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_food_pref_icon",
+        "standard_alignment": "A1.1.S1"
+      },
+      {
+        "question_id": 15,
+        "scenario_id": 8,
+        "question_text": "Routine: First, I ____ my teeth.",
+        "options": [
+          "Brush",
+          "Eat",
+          "Jump"
+        ],
+        "correct_answer": "Brush",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_brush_teeth",
+        "standard_alignment": "A1.1.L1"
+      },
+      {
+        "question_id": 16,
+        "scenario_id": 8,
+        "question_text": "It is bedtime because I am ____.",
+        "options": [
+          "Sleepy",
+          "Hungry",
+          "Pink"
+        ],
+        "correct_answer": "Sleepy",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sleepy_face",
+        "standard_alignment": "A1.1.S1"
+      }
+    ]
+  },
+  "4th": {
+    "grade_id": "4th Grade",
+    "cefr_level": "A1.2",
+    "scenarios": [
+      {
+        "id": 1,
+        "name": "A Walk in the Neighborhood",
+        "levels": [
+          {
+            "theme_name": "This Is My Favorite",
+            "goal": "Extract specific info about preferences"
+          },
+          {
+            "theme_name": "It's the Best!",
+            "goal": "Demonstrate superlative understanding"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Helping in the Garden",
+        "levels": [
+          {
+            "theme_name": "The Tomatoes Grow Quickly",
+            "goal": "Identify adverbs of manner"
+          },
+          {
+            "theme_name": "These Plants Are from Panama",
+            "goal": "Identify plant origins"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Shopping at the Market",
+        "levels": [
+          {
+            "theme_name": "How Much Is the Pineapple?",
+            "goal": "Extract price information"
+          },
+          {
+            "theme_name": "I Need Five Yucas",
+            "goal": "Extract quantity for local produce"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Visiting the Panama Canal",
+        "levels": [
+          {
+            "theme_name": "The Vessels Are Big Because...",
+            "goal": "Understand reasons for ship size"
+          },
+          {
+            "theme_name": "A Vessel Is Crossing!",
+            "goal": "Describe current canal actions"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "A Trip to the Beach",
+        "levels": [
+          {
+            "theme_name": "Let's Pack for a Trip",
+            "goal": "Plan items for a trip"
+          },
+          {
+            "theme_name": "I Always Pack Lunch",
+            "goal": "Identify frequency habits"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "I Can Connect with Nature!",
+        "levels": [
+          {
+            "theme_name": "It's a Slow, Furry Sloth!",
+            "goal": "Identify specific animal details"
+          },
+          {
+            "theme_name": "Discovering Nature's Wonders",
+            "goal": "Identify environmental details"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "The Beautiful Mola",
+        "levels": [
+          {
+            "theme_name": "A Mola Has Many Colors!",
+            "goal": "Describe cultural art specific details"
+          },
+          {
+            "theme_name": "I Can Make a Mola",
+            "goal": "Identify personal abilities"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Our Traditional Style of Dress",
+        "levels": [
+          {
+            "theme_name": "She Is Wearing a Pollera",
+            "goal": "Identify traditional clothing details"
+          },
+          {
+            "theme_name": "Let's Dress for a Dance",
+            "goal": "Identify cultural social context"
+          }
+        ]
+      }
+    ],
+    "challenges": [
+      {
+        "question_id": 1,
+        "scenario_id": 1,
+        "question_text": "This park is the BEST. It is...",
+        "options": [
+          "Better than all",
+          "Bad",
+          "Small"
+        ],
+        "correct_answer": "Better than all",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_park_best",
+        "standard_alignment": "A1.2.L1"
+      },
+      {
+        "question_id": 2,
+        "scenario_id": 1,
+        "question_text": "Jump on your FAVORITE neighborhood spot.",
+        "options": [
+          "Park",
+          "Market",
+          "Home"
+        ],
+        "correct_answer": "Park",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_park_fav",
+        "standard_alignment": "A1.2.S1"
+      },
+      {
+        "question_id": 3,
+        "scenario_id": 2,
+        "question_text": "Tomatoes grow ____ (Visual: fast arrow).",
+        "options": [
+          "Quickly",
+          "Slowly",
+          "Blue"
+        ],
+        "correct_answer": "Quickly",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_tomato_growth",
+        "standard_alignment": "A1.2.L1"
+      },
+      {
+        "question_id": 4,
+        "scenario_id": 2,
+        "question_text": "Are these plants from Panama?",
+        "options": [
+          "Yes, they are",
+          "No, they isn't",
+          "Maybe fruit"
+        ],
+        "correct_answer": "Yes, they are",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_panama_flora",
+        "standard_alignment": "A1.2.L1"
+      },
+      {
+        "question_id": 5,
+        "scenario_id": 3,
+        "question_text": "How much is the pineapple? (Sign: $1.00)",
+        "options": [
+          "One dollar",
+          "Five dollars",
+          "Ten cents"
+        ],
+        "correct_answer": "One dollar",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_pineapple_price",
+        "standard_alignment": "A1.2.R1"
+      },
+      {
+        "question_id": 6,
+        "scenario_id": 3,
+        "question_text": "Mediation: A tourist asks the price. You say:",
+        "options": [
+          "It costs $1",
+          "Go away",
+          "I like fruit"
+        ],
+        "correct_answer": "It costs $1",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_mediation_price",
+        "standard_alignment": "A1.2.M1"
+      },
+      {
+        "question_id": 7,
+        "scenario_id": 4,
+        "question_text": "Why are vessels big?",
+        "options": [
+          "To carry many things",
+          "To swim fast",
+          "Because they eat"
+        ],
+        "correct_answer": "To carry many things",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_vessel_size",
+        "standard_alignment": "A1.2.L1"
+      },
+      {
+        "question_id": 8,
+        "scenario_id": 4,
+        "question_text": "Jump on the VESSEL crossing the Canal.",
+        "options": [
+          "Small boat",
+          "Big vessel",
+          "Airplane"
+        ],
+        "correct_answer": "Big vessel",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_canal_vessel",
+        "standard_alignment": "A1.2.L1"
+      },
+      {
+        "question_id": 9,
+        "scenario_id": 5,
+        "question_text": "I ____ pack lunch for the beach.",
+        "options": [
+          "Always",
+          "Never",
+          "Tomorrow"
+        ],
+        "correct_answer": "Always",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_freq_always",
+        "standard_alignment": "A1.2.L1"
+      },
+      {
+        "question_id": 10,
+        "scenario_id": 5,
+        "question_text": "What do we pack for a TRIP?",
+        "options": [
+          "Bag and clothes",
+          "A house",
+          "A bed"
+        ],
+        "correct_answer": "Bag and clothes",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_packing_trip",
+        "standard_alignment": "A1.2.S1"
+      },
+      {
+        "question_id": 11,
+        "scenario_id": 6,
+        "question_text": "Extract info: The sloth is FURRY and...",
+        "options": [
+          "Fast",
+          "Slow",
+          "Blue"
+        ],
+        "correct_answer": "Slow",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sloth_traits",
+        "standard_alignment": "A1.2.R1"
+      },
+      {
+        "question_id": 12,
+        "scenario_id": 6,
+        "question_text": "Nature rule: Take only pictures, leave only ____.",
+        "options": [
+          "Footprints",
+          "Trash",
+          "Food"
+        ],
+        "correct_answer": "Footprints",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_nature_rule",
+        "standard_alignment": "A1.2.M1"
+      },
+      {
+        "question_id": 13,
+        "scenario_id": 7,
+        "question_text": "A MOLA has ____ colors.",
+        "options": [
+          "Many",
+          "One",
+          "Zero"
+        ],
+        "correct_answer": "Many",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_mola_colors",
+        "standard_alignment": "A1.2.L1"
+      },
+      {
+        "question_id": 14,
+        "scenario_id": 7,
+        "question_text": "I ____ make a Mola. (Ability)",
+        "options": [
+          "Can",
+          "Am",
+          "Are"
+        ],
+        "correct_answer": "Can",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_mola_skill",
+        "standard_alignment": "A1.2.S1"
+      },
+      {
+        "question_id": 15,
+        "scenario_id": 8,
+        "question_text": "The traditional dress is the ____.",
+        "options": [
+          "Pollera",
+          "Jeans",
+          "T-shirt"
+        ],
+        "correct_answer": "Pollera",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_pollera",
+        "standard_alignment": "A1.2.L1"
+      },
+      {
+        "question_id": 16,
+        "scenario_id": 8,
+        "question_text": "Mediation: A friend asks about the dance. You say:",
+        "options": [
+          "Let's dress up!",
+          "I am tired",
+          "Blue sky"
+        ],
+        "correct_answer": "Let's dress up!",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_mediation_dance",
+        "standard_alignment": "A1.2.M1"
+      }
+    ]
+  },
+  "5th": {
+    "grade_id": "5th Grade",
+    "cefr_level": "A1.3",
+    "scenarios": [
+      {
+        "id": 1,
+        "name": "Following Instructions at School",
+        "levels": [
+          {
+            "theme_name": "First, I Cut the Paper",
+            "goal": "Understand main ideas of sequential tasks"
+          },
+          {
+            "theme_name": "Let's Make a Poster!",
+            "goal": "Understand collaborative task instructions"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Taking Care of Our Classroom",
+        "levels": [
+          {
+            "theme_name": "We Are Sweeping the Floors",
+            "goal": "Identify current classroom maintenance actions"
+          },
+          {
+            "theme_name": "Let's Arrange the Chairs",
+            "goal": "Respond to classroom organization imperatives"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "The Local Farm Stand",
+        "levels": [
+          {
+            "theme_name": "I Need Two Papayas, Please",
+            "goal": "Extract specific item counts from shopping requests"
+          },
+          {
+            "theme_name": "How Much Are the Bananas?",
+            "goal": "Understand price queries in market context"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Helping Around the House",
+        "levels": [
+          {
+            "theme_name": "I Wash the Dishes Everyday",
+            "goal": "Identify and describe home habits"
+          },
+          {
+            "theme_name": "We All Do Chores",
+            "goal": "Identify shared responsibilities in home stories"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Time for Exercise",
+        "levels": [
+          {
+            "theme_name": "I Like Walking in the Afternoon",
+            "goal": "Describe daily exercise routines"
+          },
+          {
+            "theme_name": "We Can Swim",
+            "goal": "Identify group physical abilities"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Recycling for Our World",
+        "levels": [
+          {
+            "theme_name": "We Recycle Plastic Bottles Every Day",
+            "goal": "Understand specific info in sustainability stories"
+          },
+          {
+            "theme_name": "Composting Is Easy",
+            "goal": "Understand main ideas of environmental processes"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Conservation",
+        "levels": [
+          {
+            "theme_name": "Let's Get Cool in the Shade",
+            "goal": "Identify climate-adaptation strategies"
+          },
+          {
+            "theme_name": "Turn Off the Lights, Please",
+            "goal": "Respond to energy-saving requests"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "Planning Meals for My Family",
+        "levels": [
+          {
+            "theme_name": "Fruits and Vegetables Are Good for You",
+            "goal": "Identify healthy advice in texts"
+          },
+          {
+            "theme_name": "Panama Has Delicious Food!",
+            "goal": "Express cultural food pride"
+          }
+        ]
+      }
+    ],
+    "challenges": [
+      {
+        "question_id": 1,
+        "scenario_id": 1,
+        "question_text": "Instruction: First I ____ the paper.",
+        "options": [
+          "Cut",
+          "Eat",
+          "Jump"
+        ],
+        "correct_answer": "Cut",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_poster_step1",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 2,
+        "scenario_id": 1,
+        "question_text": "Collaborative project: Let's make a ____!",
+        "options": [
+          "Poster",
+          "Ship",
+          "Sun"
+        ],
+        "correct_answer": "Poster",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_poster_project",
+        "standard_alignment": "A1.3.S1"
+      },
+      {
+        "question_id": 3,
+        "scenario_id": 2,
+        "question_text": "We are ____ the floors. (Continuous action)",
+        "options": [
+          "Sweeping",
+          "Running",
+          "Sleeping"
+        ],
+        "correct_answer": "Sweeping",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sweeping",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 4,
+        "scenario_id": 2,
+        "question_text": "Mediation: A classmate is lost. You say:",
+        "options": [
+          "I'll show you!",
+          "Go away",
+          "It's Friday"
+        ],
+        "correct_answer": "I'll show you!",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_med_help",
+        "standard_alignment": "A1.3.M1"
+      },
+      {
+        "question_id": 5,
+        "scenario_id": 3,
+        "question_text": "I need two ____, please.",
+        "options": [
+          "Papayas",
+          "Cars",
+          "Schools"
+        ],
+        "correct_answer": "Papayas",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_papaya_two",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 6,
+        "scenario_id": 3,
+        "question_text": "Extract price: How much are the bananas?",
+        "options": [
+          "They are $2",
+          "They are yellow",
+          "I like them"
+        ],
+        "correct_answer": "They are $2",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_banana_price",
+        "standard_alignment": "A1.3.R1"
+      },
+      {
+        "question_id": 7,
+        "scenario_id": 4,
+        "question_text": "I wash the ____ every day.",
+        "options": [
+          "Dishes",
+          "Trees",
+          "Clouds"
+        ],
+        "correct_answer": "Dishes",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_dishwashing",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 8,
+        "scenario_id": 4,
+        "question_text": "We all do ____ at home. (Shared work)",
+        "options": [
+          "Chores",
+          "Sleep",
+          "Math"
+        ],
+        "correct_answer": "Chores",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_family_chores",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 9,
+        "scenario_id": 5,
+        "question_text": "I walk in the ____ (Routine time).",
+        "options": [
+          "Afternoon",
+          "Moon",
+          "Rain"
+        ],
+        "correct_answer": "Afternoon",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_walk_afternoon",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 10,
+        "scenario_id": 5,
+        "question_text": "We ____ swim in the pool.",
+        "options": [
+          "Can",
+          "Are",
+          "Blue"
+        ],
+        "correct_answer": "Can",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_swim_ability",
+        "standard_alignment": "A1.3.S1"
+      },
+      {
+        "question_id": 11,
+        "scenario_id": 6,
+        "question_text": "We recycle PLASTIC ____ every day.",
+        "options": [
+          "Bottles",
+          "Trees",
+          "Pencils"
+        ],
+        "correct_answer": "Bottles",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_recycle_bottles",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 12,
+        "scenario_id": 6,
+        "question_text": "Main idea: Composting helps the ____.",
+        "options": [
+          "Earth",
+          "Moon",
+          "School bus"
+        ],
+        "correct_answer": "Earth",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_compost_earth",
+        "standard_alignment": "A1.3.R1"
+      },
+      {
+        "question_id": 13,
+        "scenario_id": 7,
+        "question_text": "Energy rule: Turn ____ the lights.",
+        "options": [
+          "Off",
+          "On",
+          "Yellow"
+        ],
+        "correct_answer": "Off",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_light_switch",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 14,
+        "scenario_id": 7,
+        "question_text": "It is hot! Let's get cool in the ____.",
+        "options": [
+          "Shade",
+          "Sun",
+          "Fire"
+        ],
+        "correct_answer": "Shade",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_tree_shade",
+        "standard_alignment": "A1.3.S1"
+      },
+      {
+        "question_id": 15,
+        "scenario_id": 8,
+        "question_text": "Vegetables are ____ for you.",
+        "options": [
+          "Good",
+          "Bad",
+          "Blue"
+        ],
+        "correct_answer": "Good",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_healthy_veg",
+        "standard_alignment": "A1.3.L1"
+      },
+      {
+        "question_id": 16,
+        "scenario_id": 8,
+        "question_text": "Mediation: A friend eats only candy. You say:",
+        "options": [
+          "Try a carrot!",
+          "Eat more candy!",
+          "I like blue"
+        ],
+        "correct_answer": "Try a carrot!",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_med_healthy",
+        "standard_alignment": "A1.3.M1"
+      }
+    ]
+  },
+  "6th": {
+    "grade_id": "6th Grade",
+    "cefr_level": "A2.1",
+    "scenarios": [
+      {
+        "id": 1,
+        "name": "Our Community News",
+        "levels": [
+          {
+            "theme_name": "Reporting From the School!",
+            "goal": "Extract main ideas and details from oral reports"
+          },
+          {
+            "theme_name": "Our Community is Famous For...",
+            "goal": "Analyze community pride details in texts"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Keeping Our Communities Clean",
+        "levels": [
+          {
+            "theme_name": "We Should Clean the Classroom on Friday",
+            "goal": "Understand modal verbs for suggestions"
+          },
+          {
+            "theme_name": "Who Will Bring the Cleaning Supplies?",
+            "goal": "Identify future planning details"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "In the Library",
+        "levels": [
+          {
+            "theme_name": "I Need a Lot of Books!",
+            "goal": "Extract quantity details in academic contexts"
+          },
+          {
+            "theme_name": "How Do I Find a Book in the Library?",
+            "goal": "Analyze informational queries"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Our Classroom News",
+        "levels": [
+          {
+            "theme_name": "I Will Write the Article About Our School Trip",
+            "goal": "Identify future intention details"
+          },
+          {
+            "theme_name": "We Need Pictures for the Classroom Newsletter",
+            "goal": "Collaborate on content needs"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Our Amazing Community",
+        "levels": [
+          {
+            "theme_name": "This Is My Amazing Community",
+            "goal": "Analyze detailed community descriptions"
+          },
+          {
+            "theme_name": "This School Has Been Here a Long Time!",
+            "goal": "Understand present perfect sense in history"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "An Environmental Project",
+        "levels": [
+          {
+            "theme_name": "Recycling at School",
+            "goal": "Understand complex project planning details"
+          },
+          {
+            "theme_name": "Saving the Local Wildlife",
+            "goal": "Extract info on conservation awareness"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Our Weather Report",
+        "levels": [
+          {
+            "theme_name": "The Forecast for Tomorrow",
+            "goal": "Extract specific future weather info"
+          },
+          {
+            "theme_name": "Extreme Weather in Panama",
+            "goal": "Analyze climate discussion details"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "The Talents Around Us",
+        "levels": [
+          {
+            "theme_name": "My Friend Is Great at Music",
+            "goal": "Analyze abilities of others in narratives"
+          },
+          {
+            "theme_name": "Local Artists in My Town",
+            "goal": "Extract info about cultural talents"
+          }
+        ]
+      }
+    ],
+    "challenges": [
+      {
+        "question_id": 1,
+        "scenario_id": 1,
+        "question_text": "Based on the report, why is the community FAMOUS?",
+        "options": [
+          "For the Canal",
+          "For the park",
+          "For the store"
+        ],
+        "correct_answer": "For the Canal",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_news_famous",
+        "standard_alignment": "A2.1.L1"
+      },
+      {
+        "question_id": 2,
+        "scenario_id": 1,
+        "question_text": "News mediation: How do we share community pride?",
+        "options": [
+          "Write an article",
+          "Don't speak",
+          "Sleep"
+        ],
+        "correct_answer": "Write an article",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_med_pride",
+        "standard_alignment": "A2.1.M1"
+      },
+      {
+        "question_id": 3,
+        "scenario_id": 2,
+        "question_text": "Suggestion: We ____ clean the classroom on Friday.",
+        "options": [
+          "Should",
+          "May",
+          "Are"
+        ],
+        "correct_answer": "Should",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_cleaning_modals",
+        "standard_alignment": "A2.1.L1"
+      },
+      {
+        "question_id": 4,
+        "scenario_id": 2,
+        "question_text": "Planning: Who ____ bring the supplies tomorrow?",
+        "options": [
+          "Will",
+          "Did",
+          "Is"
+        ],
+        "correct_answer": "Will",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_future_plan",
+        "standard_alignment": "A2.1.L1"
+      },
+      {
+        "question_id": 5,
+        "scenario_id": 3,
+        "question_text": "Library info: How do you find a book?",
+        "options": [
+          "Use the computer",
+          "Ask the dog",
+          "Run fast"
+        ],
+        "correct_answer": "Use the computer",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_library_search",
+        "standard_alignment": "A2.1.R1"
+      },
+      {
+        "question_id": 6,
+        "scenario_id": 3,
+        "question_text": "I need a ____ of books for research.",
+        "options": [
+          "Lot",
+          "Few",
+          "One"
+        ],
+        "correct_answer": "Lot",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_books_qty",
+        "standard_alignment": "A2.1.L1"
+      },
+      {
+        "question_id": 7,
+        "scenario_id": 4,
+        "question_text": "Intention: I ____ write the newsletter article.",
+        "options": [
+          "Will",
+          "Was",
+          "Am"
+        ],
+        "correct_answer": "Will",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_writing_intent",
+        "standard_alignment": "A2.1.L1"
+      },
+      {
+        "question_id": 8,
+        "scenario_id": 4,
+        "question_text": "Collaborative rule: We need ____ for the newsletter.",
+        "options": [
+          "Pictures",
+          "Food",
+          "Bed"
+        ],
+        "correct_answer": "Pictures",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_newsletter_collab",
+        "standard_alignment": "A2.1.S1"
+      },
+      {
+        "question_id": 9,
+        "scenario_id": 5,
+        "question_text": "History: This school has been here for a ____ time.",
+        "options": [
+          "Long",
+          "Short",
+          "Blue"
+        ],
+        "correct_answer": "Long",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_school_history",
+        "standard_alignment": "A2.1.L1"
+      },
+      {
+        "question_id": 10,
+        "scenario_id": 5,
+        "question_text": "Community description: Our community is ____.",
+        "options": [
+          "Amazing",
+          "Broken",
+          "Small"
+        ],
+        "correct_answer": "Amazing",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_community_desc",
+        "standard_alignment": "A2.1.S1"
+      },
+      {
+        "question_id": 11,
+        "scenario_id": 6,
+        "question_text": "The habitat of the sloth is the ____.",
+        "options": [
+          "Rainforest",
+          "Desert",
+          "Ocean"
+        ],
+        "correct_answer": "Rainforest",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_sloth_habitat",
+        "standard_alignment": "A2.1.R1"
+      },
+      {
+        "question_id": 12,
+        "scenario_id": 6,
+        "question_text": "Mediation: A project needs help. You say:",
+        "options": [
+          "Let's work together!",
+          "I am busy",
+          "No help"
+        ],
+        "correct_answer": "Let's work together!",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_med_project",
+        "standard_alignment": "A2.1.M1"
+      },
+      {
+        "question_id": 13,
+        "scenario_id": 7,
+        "question_text": "The ____ for tomorrow is sunny.",
+        "options": [
+          "Forecast",
+          "History",
+          "Math"
+        ],
+        "correct_answer": "Forecast",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_weather_forecast",
+        "standard_alignment": "A2.1.L1"
+      },
+      {
+        "question_id": 14,
+        "scenario_id": 7,
+        "question_text": "Extreme weather in Panama includes ____.",
+        "options": [
+          "Heavy rain",
+          "Snow",
+          "Tornadoes"
+        ],
+        "correct_answer": "Heavy rain",
+        "mechanic_type": "jump",
+        "competence_tag": "pragmatic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_rain_extreme",
+        "standard_alignment": "A2.1.S1"
+      },
+      {
+        "question_id": 15,
+        "scenario_id": 8,
+        "question_text": "My friend is good ____ music.",
+        "options": [
+          "At",
+          "In",
+          "On"
+        ],
+        "correct_answer": "At",
+        "mechanic_type": "jump",
+        "competence_tag": "linguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_talent_music",
+        "standard_alignment": "A2.1.L1"
+      },
+      {
+        "question_id": 16,
+        "scenario_id": 8,
+        "question_text": "Mediation: An artist visits the school. You say:",
+        "options": [
+          "Welcome to our class!",
+          "Go away",
+          "I am red"
+        ],
+        "correct_answer": "Welcome to our class!",
+        "mechanic_type": "jump",
+        "competence_tag": "sociolinguistic",
+        "audio_cue_required": true,
+        "visual_asset_key": "img_med_welcome",
+        "standard_alignment": "A2.1.M1"
+      }
+    ]
+  }
+};
+
+    /* ================= GLOBAL STATE ================= */
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0, DPR = 1;
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width  = Math.floor(rect.width  * DPR);
+      canvas.height = Math.floor(rect.height * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      W = rect.width; H = rect.height;
+    }
+    window.addEventListener('resize', resize);
+    window.addEventListener('orientationchange', () => setTimeout(resize, 120));
+
+    let state = 'MENU';
+    let score = 0, totalCoins = 0, levelCoins = 0, stars = 0, lives = 3;
+    let currentGrade = '3rd', currentLevelIdx = 0, currentLevel = null;
+    let camera = { x: 0, targetX: 0 }, lastTime = 0, audioCtx = null;
+    let muted = false;
+    const keys = { left: false, right: false, jump: false, jumpPressed: false };
+    let allLevels = [], particles = [], platforms = [], coins = [], options = [];
+    let answered = false, shakeTimer = 0, wrongAttempts = 0;
+
+    // Player profile
+    let profile = { name: '', avatar: 'boy' };
+
+    /* ================= PROFILE / STORAGE ================= */
+    const STORAGE_KEY = 'pk6_profiles_v2';
+    const LEGACY_KEY = 'pk6_progress'; // kept for backwards compatibility (teacher.html)
+
+    function loadProfiles() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+    }
+    function saveProfiles(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+    function getOrCreateProfile(name, avatar) {
+      const profiles = loadProfiles();
+      if (!profiles[name]) {
+        profiles[name] = {
+          name, avatar: avatar || 'boy',
+          createdAt: new Date().toISOString(),
+          grades: {} // grades[gradeId] = { completed:Set, correct:0, wrong:0, starsTotal:0, lastPlayed:ts }
+        };
+      } else if (avatar) {
+        profiles[name].avatar = avatar;
+      }
+      saveProfiles(profiles);
+      return profiles[name];
+    }
+    function updateProgress(name, gradeId, questionId, wasCorrect, earnedStars) {
+      const profiles = loadProfiles();
+      const p = profiles[name];
+      if (!p) return;
+      if (!p.grades[gradeId]) p.grades[gradeId] = { completed: [], correct: 0, wrong: 0, starsTotal: 0, lastPlayed: '' };
+      const g = p.grades[gradeId];
+      if (wasCorrect) {
+        if (!g.completed.includes(questionId)) g.completed.push(questionId);
+        g.correct++;
+        g.starsTotal += earnedStars || 0;
+      } else {
+        g.wrong++;
+      }
+      g.lastPlayed = new Date().toISOString();
+      saveProfiles(profiles);
+
+      // Legacy write for teacher.html panel (simple counters)
+      try {
+        const legacy = JSON.parse(localStorage.getItem(LEGACY_KEY) || '{}');
+        const rkey = `${name}:${gradeId}:${questionId}`;
+        if (wasCorrect) legacy[rkey] = (legacy[rkey] || 0) + 1;
+        localStorage.setItem(LEGACY_KEY, JSON.stringify(legacy));
+      } catch(e){}
+    }
+    function getGradeProgress(name, gradeId) {
+      const profiles = loadProfiles();
+      const p = profiles[name];
+      if (!p || !p.grades[gradeId]) return { completed: 0, total: 0, percent: 0 };
+      const total = (CURRICULUM_DATA[gradeId]?.challenges || []).length;
+      const done = p.grades[gradeId].completed.length;
+      return { completed: done, total, percent: total ? Math.round(done * 100 / total) : 0 };
+    }
+    function deleteProfile(name) {
+      const profiles = loadProfiles();
+      delete profiles[name];
+      saveProfiles(profiles);
+    }
+
+    /* ================= CURRICULUM PARSER ================= */
+    function parseGameData(rawData) {
+      if (!rawData) return [];
+      const scenariosMap = {};
+      rawData.scenarios.forEach(s => { scenariosMap[s.id] = s; });
+      return rawData.challenges.map(c => {
+        const scn = scenariosMap[c.scenario_id];
+        const theme = scn && scn.levels && scn.levels[0] ? scn.levels[0] : null;
+        return {
+          id: c.question_id, scenarioId: c.scenario_id,
+          topic: scn ? scn.name : 'General',
+          theme: theme ? theme.theme_name : 'Practice',
+          goal: theme ? theme.goal : '',
+          competence: c.competence_tag || 'linguistic',
+          audio: !!c.audio_cue_required,
+          qData: {
+            q: c.question_text, options: c.options.slice(),
+            correct: c.options.indexOf(c.correct_answer)
+          }
+        };
+      });
+    }
+
+    /* ================= AUDIO ================= */
+    const Sounds = {
+      init() { if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} } },
+      play(type) {
+        if (!audioCtx || muted) return;
+        const t = audioCtx.currentTime;
+        const mk = () => { const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); return { o, g }; };
+        if (type === 'jump') { const {o,g}=mk(); o.type='sine'; o.frequency.setValueAtTime(420,t); o.frequency.exponentialRampToValueAtTime(720,t+0.10); g.gain.setValueAtTime(0.16,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.16); o.start(t); o.stop(t+0.18); }
+        else if (type === 'coin') { const {o,g}=mk(); o.type='triangle'; o.frequency.setValueAtTime(880,t); o.frequency.exponentialRampToValueAtTime(1568,t+0.08); g.gain.setValueAtTime(0.10,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.14); o.start(t); o.stop(t+0.16); }
+        else if (type === 'correct') {
+          [523, 659, 784, 1046].forEach((f, i) => {
+            const oo = audioCtx.createOscillator(), gg = audioCtx.createGain();
+            oo.connect(gg); gg.connect(audioCtx.destination);
+            oo.type = 'sine'; oo.frequency.setValueAtTime(f, t + i * 0.08);
+            gg.gain.setValueAtTime(0.12, t + i * 0.08);
+            gg.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.22);
+            oo.start(t + i * 0.08); oo.stop(t + i * 0.08 + 0.24);
+          });
+        }
+        else if (type === 'star') {
+          [784, 988, 1318, 1568, 1976].forEach((f, i) => {
+            const oo = audioCtx.createOscillator(), gg = audioCtx.createGain();
+            oo.connect(gg); gg.connect(audioCtx.destination);
+            oo.type = 'triangle'; oo.frequency.setValueAtTime(f, t + i * 0.05);
+            gg.gain.setValueAtTime(0.13, t + i * 0.05);
+            gg.gain.exponentialRampToValueAtTime(0.001, t + i * 0.05 + 0.25);
+            oo.start(t + i * 0.05); oo.stop(t + i * 0.05 + 0.28);
+          });
+        }
+        else if (type === 'wrong') { const {o,g}=mk(); o.type='sine'; o.frequency.setValueAtTime(320,t); o.frequency.exponentialRampToValueAtTime(140,t+0.3); g.gain.setValueAtTime(0.14,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.32); o.start(t); o.stop(t+0.34); }
+        else if (type === 'click') { const {o,g}=mk(); o.type='sine'; o.frequency.setValueAtTime(660,t); g.gain.setValueAtTime(0.06,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.08); o.start(t); o.stop(t+0.09); }
+        else if (type === 'fanfare') {
+          [523, 659, 784, 1046, 1318, 1568].forEach((f, i) => {
+            const oo = audioCtx.createOscillator(), gg = audioCtx.createGain();
+            oo.connect(gg); gg.connect(audioCtx.destination);
+            oo.type = 'sine'; oo.frequency.setValueAtTime(f, t + i * 0.09);
+            gg.gain.setValueAtTime(0.13, t + i * 0.09);
+            gg.gain.exponentialRampToValueAtTime(0.001, t + i * 0.09 + 0.28);
+            oo.start(t + i * 0.09); oo.stop(t + i * 0.09 + 0.3);
+          });
+        }
+      },
+      speak(text, competence) {
+        if (muted) return;
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text.replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim());
+          u.lang = 'en-US';
+          u.rate = (competence === 'sociolinguistic') ? 0.82 : 0.92;
+          u.pitch = 1.15;
+          window.speechSynthesis.speak(u);
+        }
+      }
+    };
+
+    /* ================= PARTICLES ================= */
+    class Particle {
+      constructor(x, y, c, opts = {}) {
+        this.x = x; this.y = y;
+        this.vx = (opts.vx !== undefined ? opts.vx : (Math.random() - .5) * 300);
+        this.vy = (opts.vy !== undefined ? opts.vy : (Math.random() - .5) * 300 - 100);
+        this.life = opts.life || 1;
+        this.c = c;
+        this.s = opts.s || (Math.random() * 6 + 3);
+        this.shape = opts.shape || 'square';
+        this.gravity = opts.gravity !== undefined ? opts.gravity : 400;
+        this.rot = Math.random() * Math.PI * 2;
+        this.vrot = (Math.random() - .5) * 10;
+      }
+      update(dt) {
+        this.x += this.vx * dt; this.y += this.vy * dt;
+        this.vy += this.gravity * dt;
+        this.life -= 1.8 * dt; this.s *= 0.985;
+        this.rot += this.vrot * dt;
+      }
+      draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, this.life);
+        ctx.translate(this.x, this.y); ctx.rotate(this.rot);
+        ctx.fillStyle = this.c;
+        if (this.shape === 'heart') { drawHeart(ctx, 0, 0, this.s); }
+        else if (this.shape === 'star') { drawStar(ctx, 0, 0, 5, this.s, this.s * 0.45, this.c); }
+        else { ctx.fillRect(-this.s/2, -this.s/2, this.s, this.s); }
+        ctx.restore();
+      }
+    }
+    function drawHeart(ctx, cx, cy, s) {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + s * 0.3);
+      ctx.bezierCurveTo(cx, cy, cx - s, cy, cx - s, cy - s * 0.3);
+      ctx.bezierCurveTo(cx - s, cy - s, cx, cy - s, cx, cy - s * 0.2);
+      ctx.bezierCurveTo(cx, cy - s, cx + s, cy - s, cx + s, cy - s * 0.3);
+      ctx.bezierCurveTo(cx + s, cy, cx, cy, cx, cy + s * 0.3);
+      ctx.closePath(); ctx.fill();
+    }
+    function spawnParticles(x, y, c, n = 10) { for (let i = 0; i < n; i++) particles.push(new Particle(x, y, c)); }
+    function spawnStarBurst(x, y) {
+      const colors = ['#FFD700', '#FFF4B8', '#FFDAB8', '#FFD1DC', '#D4C5F9'];
+      for (let i = 0; i < 28; i++) particles.push(new Particle(x, y, colors[i % colors.length], { life: 1.3, shape: (i%2?'star':'heart'), s: Math.random()*6+5 }));
+    }
+    function spawnSuccessBurst(x, y) {
+      const colors = ['#B8F0D6', '#7ACF7A', '#FFF4B8', '#FFD1DC'];
+      for (let i = 0; i < 18; i++) particles.push(new Particle(x, y, colors[i % colors.length], { life: 1.2, shape: (i%3===0?'heart':'square') }));
+    }
+
+    /* ================= INPUT ================= */
+    window.addEventListener('keydown', e => {
+      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') { keys.jump = true; e.preventDefault(); }
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
+    });
+    window.addEventListener('keyup', e => {
+      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') keys.jump = false;
+      if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+      if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+    });
+    const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (hasTouch) { document.getElementById('touch-controls').style.display = 'flex'; }
+
+    function bindTouchBtn(id, k) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const press = e => { e.preventDefault(); keys[k] = true; };
+      const release = e => { e.preventDefault(); keys[k] = false; };
+      el.addEventListener('touchstart', press, { passive: false });
+      el.addEventListener('touchend', release, { passive: false });
+      el.addEventListener('touchcancel', release, { passive: false });
+      el.addEventListener('mousedown', press);
+      el.addEventListener('mouseup', release);
+      el.addEventListener('mouseleave', release);
+    }
+    bindTouchBtn('btn-left', 'left');
+    bindTouchBtn('btn-right', 'right');
+    bindTouchBtn('btn-jump', 'jump');
+
+    /* Prevent double-tap zoom / pull-to-refresh */
+    document.addEventListener('gesturestart', e => e.preventDefault());
+    document.addEventListener('touchmove', e => { if (e.scale !== 1) e.preventDefault(); }, { passive: false });
+
+    /* ================= PLAYER & PHYSICS ================= */
+    const player = { x: 80, y: 300, w: 32, h: 42, vx: 0, vy: 0, grounded: false, facing: 1, animFrame: 0, animTimer: 0, jumpCount: 0, maxJumps: 2, blink: 0, blinkTimer: 0 };
+    const GRAVITY = 1800, MOVE_SPEED = 290, JUMP_FORCE = -600, FRICTION = 0.85;
+
+    /* ================= UI ================= */
+    function updateUI() {
+      document.getElementById('coins-display').textContent = totalCoins;
+      document.getElementById('stars-display').textContent = stars;
+      document.getElementById('lives-display').textContent = '❤️'.repeat(Math.max(0, lives)) || '💔';
+      document.getElementById('level-display').textContent = `Q ${currentLevelIdx + 1}/${allLevels.length}`;
+      document.getElementById('player-name').textContent = profile.name || 'Player';
+      const gradeLabels = {'prek':'Pre-K','k':'Kinder','1st':'1st','2nd':'2nd','3rd':'3rd','4th':'4th','5th':'5th','6th':'6th'};
+      document.getElementById('grade-pill').textContent = gradeLabels[currentGrade] || currentGrade;
+      const tagEl = document.getElementById('comp-tag');
+      if (currentLevel) {
+        const comp = currentLevel.competence || 'linguistic';
+        tagEl.textContent = comp.charAt(0).toUpperCase() + comp.slice(1);
+        tagEl.className = `competence-tag comp-${comp}`;
+      }
+    }
+
+    /* ================= LEVEL SPAWN ================= */
+    function spawnLevel(levelData) {
+      answered = false; levelCoins = 0; wrongAttempts = 0; currentLevel = levelData;
+
+      document.getElementById('topic-display').textContent = levelData.topic + ' — ' + levelData.theme;
+      document.getElementById('prompt-text').textContent = levelData.qData.q;
+      document.getElementById('goal-text').textContent = levelData.goal ? `🎯 ${levelData.goal}` : '';
+
+      const box = document.getElementById('prompt-box');
+      box.style.display = 'block';
+      box.style.animation = 'none';
+      void box.offsetHeight;
+      box.style.animation = 'slideDown 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+      if (levelData.audio) setTimeout(() => Sounds.speak(levelData.qData.q, levelData.competence), 500);
+
+      // Build world
+      platforms = []; coins = []; options = [];
+      const groundY = H - 70;
+      platforms.push({ x: -200, y: groundY, w: 3500, h: 120, type: 'ground' });
+
+      // Floating helper platforms (cloud-shaped)
+      for (let i = 0; i < 3; i++) {
+        platforms.push({ x: 520 + i * 380, y: groundY - 120 - Math.random() * 50, w: 120, h: 20, type: 'cloud' });
+      }
+
+      // Coins scattered
+      for (let i = 0; i < 6; i++) {
+        coins.push({ x: 280 + i * 220, y: groundY - 140 - Math.random() * 60, r: 13, collected: false, bob: Math.random() * Math.PI * 2 });
+      }
+
+      // Option platforms spaced across scrollable world
+      const optY = groundY - 215;
+      const worldStart = Math.max(430, W * 0.5);
+      const spacing = Math.max(250, Math.min(W / 3, 290));
+      levelData.qData.options.forEach((opt, i) => {
+        options.push({
+          x: worldStart + i * spacing,
+          y: optY - (i % 2) * 52,
+          w: Math.min(spacing - 30, 210),
+          h: 58,
+          label: opt,
+          correct: i === levelData.qData.correct,
+          bounce: Math.random() * Math.PI * 2,
+          state: 'neutral'
+        });
+      });
+
+      // Reset player
+      player.x = 80; player.y = groundY - 200; player.vx = 0; player.vy = 0; player.jumpCount = 0;
+      camera.x = 0; camera.targetX = 0;
+      updateUI();
+    }
+
+    function showFeedback(msg, color) {
+      const el = document.getElementById('feedback');
+      el.textContent = msg;
+      el.style.color = color;
+      el.style.borderColor = color;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 1600);
+    }
+
+    function takeDamage() {
+      lives--; wrongAttempts++;
+      Sounds.play('wrong');
+      shakeTimer = 0.5;
+      if (profile.name) updateProgress(profile.name, currentGrade, currentLevel.id, false, 0);
+      updateUI();
+      if (lives <= 0) {
+        setTimeout(() => { state = 'GAMEOVER'; document.getElementById('game-over').style.display = 'flex'; }, 700);
+      } else {
+        showFeedback('Try again! 💪', '#FF8FA3');
+        setTimeout(() => { answered = false; options.forEach(o => { if (!o.correct) o.state = 'neutral'; }); }, 1400);
+      }
+    }
+
+    function checkAnswer(entity) {
+      if (answered) return;
+      answered = true;
+      if (!entity.correct) {
+        entity.state = 'fail';
+        spawnParticles(entity.x + entity.w / 2, entity.y + entity.h / 2, '#FF8FA3', 12);
+        takeDamage();
+        player.vy = -440;
+      } else {
+        entity.state = 'success';
+        options.forEach(o => { if (o.correct) o.state = 'success'; });
+        Sounds.play('correct');
+        const bonusCoins = 5;
+        totalCoins += bonusCoins; levelCoins += bonusCoins;
+        score += 100;
+        spawnSuccessBurst(entity.x + entity.w / 2, entity.y + entity.h / 2);
+        showFeedback('Excellent! ✨', '#7ACF7A');
+        updateUI();
+
+        setTimeout(() => {
+          const earnedStars = wrongAttempts === 0 ? 3 : (wrongAttempts === 1 ? 2 : 1);
+          stars += earnedStars;
+          Sounds.play('star');
+          spawnStarBurst(player.x + player.w / 2, player.y);
+          if (profile.name) updateProgress(profile.name, currentGrade, currentLevel.id, true, earnedStars);
+          updateUI();
+
+          state = 'COMPLETE';
+          document.getElementById('lc-stars').textContent = '⭐'.repeat(earnedStars) + '☆'.repeat(3 - earnedStars);
+          document.getElementById('lc-stats').innerHTML =
+            `🪙 +${levelCoins} Coins  •  ⭐ +${earnedStars} Star${earnedStars > 1 ? 's' : ''}<br>` +
+            `<span style="font-size:13px;opacity:0.75">${currentLevel.competence} skill practiced</span>`;
+          document.getElementById('level-complete').style.display = 'flex';
+        }, 1400);
+      }
+    }
+
+    /* ================= FLOW ================= */
+    function hideAll() {
+      ['start-overlay','name-screen','grade-select','level-complete','game-over','grade-complete']
+        .forEach(id => document.getElementById(id).style.display = 'none');
+      document.getElementById('hud').style.display = 'none';
+      document.getElementById('prompt-box').style.display = 'none';
+    }
+    function showStart() { hideAll(); document.getElementById('start-overlay').style.display = 'flex'; state = 'MENU'; }
+    function showName() { hideAll(); document.getElementById('name-screen').style.display = 'flex'; renderExistingPlayers(); state = 'MENU'; }
+    function showGrades() {
+      hideAll(); document.getElementById('grade-select').style.display = 'flex';
+      document.getElementById('grade-greeting').textContent = `Hi ${profile.name}! Choose Your Grade 🎓`;
+      renderGradeGrid(); state = 'MENU';
+    }
+
+    function renderExistingPlayers() {
+      const profiles = loadProfiles();
+      const el = document.getElementById('existing-players');
+      el.innerHTML = '';
+      const names = Object.keys(profiles);
+      if (names.length === 0) return;
+      const label = document.createElement('div');
+      label.style.cssText = 'width:100%;font-size:13px;color:var(--ink-soft);margin-bottom:4px;font-weight:600;';
+      label.textContent = 'Or continue as:';
+      el.appendChild(label);
+      names.forEach(name => {
+        const chip = document.createElement('div');
+        chip.className = 'player-chip';
+        chip.innerHTML = `${name} <span class="del" title="Remove">×</span>`;
+        chip.addEventListener('click', (e) => {
+          if (e.target.classList.contains('del')) {
+            if (confirm(`Remove ${name}'s progress?`)) { deleteProfile(name); renderExistingPlayers(); }
+            return;
+          }
+          profile = profiles[name];
+          document.getElementById('name-input').value = profile.name;
+          // set avatar selection UI
+          document.querySelectorAll('.avatar-opt').forEach(a => a.classList.toggle('selected', a.dataset.avatar === profile.avatar));
+          Sounds.init(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+          Sounds.play('click');
+          showGrades();
+        });
+        el.appendChild(chip);
+      });
+    }
+
+    function renderGradeGrid() {
+      const grades = [
+        { id: 'prek', label: 'Pre-K',     sub: 'Ages 4-5',  emoji: '🌈', cls: 'prek' },
+        { id: 'k',    label: 'Kinder',    sub: 'Ages 5-6',  emoji: '🎒', cls: 'k' },
+        { id: '1st',  label: '1st Grade', sub: 'Ages 6-7',  emoji: '🌟', cls: 'g1' },
+        { id: '2nd',  label: '2nd Grade', sub: 'Ages 7-8',  emoji: '🍎', cls: 'g2' },
+        { id: '3rd',  label: '3rd Grade', sub: 'Ages 8-9',  emoji: '📚', cls: 'g3' },
+        { id: '4th',  label: '4th Grade', sub: 'Ages 9-10', emoji: '🌿', cls: 'g4' },
+        { id: '5th',  label: '5th Grade', sub: 'Ages 10-11',emoji: '🚀', cls: 'g5' },
+        { id: '6th',  label: '6th Grade', sub: 'Ages 11-12',emoji: '🏆', cls: 'g6' }
+      ];
+      const grid = document.getElementById('grade-grid');
+      grid.innerHTML = '';
+      grades.forEach(g => {
+        const prog = getGradeProgress(profile.name, g.id);
+        const card = document.createElement('div');
+        card.className = `grade-card ${g.cls}`;
+        card.setAttribute('data-testid', `grade-card-${g.id}`);
+        const cefr = (CURRICULUM_DATA[g.id]?.cefr_level) || '';
+        card.innerHTML = `
+          <span class="cefr">${cefr}</span>
+          <span class="emoji">${g.emoji}</span>
+          <span class="label">${g.label}</span>
+          <span class="sub">${g.sub}</span>
+          <div class="progress-text">${prog.completed}/${prog.total} ✓</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${prog.percent}%"></div></div>
+        `;
+        card.addEventListener('click', () => { Sounds.play('click'); selectGrade(g.id); });
+        grid.appendChild(card);
+      });
+    }
+
+    function selectGrade(gradeId) {
+      Sounds.init(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      currentGrade = gradeId;
+      lives = 3; score = 0; totalCoins = 0; stars = 0;
+      hideAll();
+      document.getElementById('hud').style.display = 'flex';
+      document.getElementById('prompt-box').style.display = 'block';
+
+      const raw = CURRICULUM_DATA[gradeId];
+      allLevels = parseGameData(raw);
+
+      if (allLevels.length > 0) {
+        currentLevelIdx = 0;
+        state = 'PLAYING';
+        spawnLevel(allLevels[0]);
+        lastTime = performance.now();
+        requestAnimationFrame(gameLoop);
+      } else {
+        alert('No content for this grade.');
+        showGrades();
+      }
+    }
+
+    function nextLevel() {
+      document.getElementById('level-complete').style.display = 'none';
+      currentLevelIdx++;
+      if (currentLevelIdx >= allLevels.length) {
+        // Grade complete
+        state = 'GRADE_COMPLETE';
+        Sounds.play('fanfare');
+        document.getElementById('gc-summary').textContent =
+          `${profile.name}, you finished ${allLevels.length} questions with ⭐ ${stars} stars and 🪙 ${totalCoins} coins!`;
+        hideAll();
+        document.getElementById('grade-complete').style.display = 'flex';
+        return;
+      }
+      state = 'PLAYING';
+      spawnLevel(allLevels[currentLevelIdx]);
+    }
+    function retryLevel() {
+      document.getElementById('level-complete').style.display = 'none';
+      document.getElementById('game-over').style.display = 'none';
+      lives = 3;
+      score = Math.max(0, score - 30);
+      state = 'PLAYING';
+      spawnLevel(allLevels[currentLevelIdx]);
+    }
+
+    /* ================= NAME / AVATAR ================= */
+    let selectedAvatar = 'boy';
+    document.querySelectorAll('.avatar-opt').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.avatar-opt').forEach(a => a.classList.remove('selected'));
+        el.classList.add('selected'); selectedAvatar = el.dataset.avatar;
+        Sounds.init(); Sounds.play('click');
+      });
+    });
+    document.getElementById('name-continue-btn').addEventListener('click', () => {
+      const name = document.getElementById('name-input').value.trim();
+      if (!name) { document.getElementById('name-input').focus(); return; }
+      Sounds.init(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      profile = getOrCreateProfile(name, selectedAvatar);
+      Sounds.play('click');
+      showGrades();
+    });
+    document.getElementById('name-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('name-continue-btn').click();
+    });
+    document.getElementById('name-back-btn').addEventListener('click', () => { Sounds.play('click'); showStart(); });
+
+    /* ================= BUTTON WIRING ================= */
+    document.getElementById('start-btn').addEventListener('click', () => { Sounds.init(); Sounds.play('click'); showName(); });
+    document.getElementById('grade-back-btn').addEventListener('click', () => { Sounds.play('click'); showName(); });
+    document.getElementById('next-btn').addEventListener('click', () => { Sounds.play('click'); nextLevel(); });
+    document.getElementById('retry-btn-1').addEventListener('click', () => { Sounds.play('click'); retryLevel(); });
+    document.getElementById('retry-btn-2').addEventListener('click', () => { Sounds.play('click'); retryLevel(); });
+    document.getElementById('change-grade-btn').addEventListener('click', () => { Sounds.play('click'); showGrades(); });
+    document.getElementById('gc-next-btn').addEventListener('click', () => { Sounds.play('click'); showGrades(); });
+    document.getElementById('gc-home-btn').addEventListener('click', () => { Sounds.play('click'); showStart(); });
+    document.getElementById('home-btn').addEventListener('click', () => { Sounds.play('click'); showStart(); });
+    document.getElementById('speak-btn').addEventListener('click', () => {
+      if (currentLevel) Sounds.speak(currentLevel.qData.q, currentLevel.competence);
+    });
+    document.getElementById('mute-btn').addEventListener('click', () => {
+      muted = !muted;
+      document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+      if (muted && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    });
+
+    /* ================= MAIN LOOP ================= */
+    function update(dt) {
+      if (state !== 'PLAYING') return;
+      if (shakeTimer > 0) shakeTimer -= dt;
+
+      if (keys.left) { player.vx = Math.max(player.vx - 1200 * dt, -MOVE_SPEED); player.facing = -1; }
+      else if (keys.right) { player.vx = Math.min(player.vx + 1200 * dt, MOVE_SPEED); player.facing = 1; }
+      else { player.vx *= FRICTION; if (Math.abs(player.vx) < 10) player.vx = 0; }
+
+      if (keys.jump && player.jumpCount < player.maxJumps && !keys.jumpPressed) {
+        player.vy = JUMP_FORCE;
+        player.jumpCount++; player.grounded = false; keys.jumpPressed = true;
+        Sounds.play('jump');
+        spawnParticles(player.x + player.w / 2, player.y + player.h, '#fff', 4);
+      }
+      if (!keys.jump) keys.jumpPressed = false;
+
+      player.vy += GRAVITY * dt;
+      player.x += player.vx * dt;
+      player.y += player.vy * dt;
+
+      if (Math.abs(player.vx) > 10) {
+        player.animTimer += dt;
+        if (player.animTimer > 0.10) { player.animFrame = (player.animFrame + 1) % 4; player.animTimer = 0; }
+      } else { player.animFrame = 0; }
+
+      // blink
+      player.blinkTimer -= dt;
+      if (player.blinkTimer <= 0) {
+        player.blink = player.blink > 0 ? 0 : 0.15;
+        player.blinkTimer = player.blink > 0 ? 0.15 : (2 + Math.random() * 3);
+      }
+
+      // Platforms collision
+      player.grounded = false;
+      platforms.forEach(p => {
+        if (player.vy >= 0 &&
+            player.x + player.w > p.x && player.x < p.x + p.w &&
+            player.y + player.h >= p.y && player.y + player.h <= p.y + p.h + 20) {
+          player.y = p.y - player.h; player.vy = 0;
+          player.grounded = true; player.jumpCount = 0;
+        }
+      });
+      if (player.x < 0) { player.x = 0; player.vx = 0; }
+      if (player.y > H + 100) { player.x = 80; player.y = H - 260; player.vx = 0; player.vy = 0; }
+
+      // Coins
+      coins.forEach(c => {
+        if (c.collected) return;
+        c.bob += dt * 3;
+        const cY = c.y + Math.sin(c.bob) * 5;
+        if (player.x + player.w > c.x - c.r && player.x < c.x + c.r &&
+            player.y + player.h > cY - c.r && player.y < cY + c.r) {
+          c.collected = true; levelCoins++; totalCoins++; score += 10;
+          Sounds.play('coin');
+          spawnParticles(c.x, cY, '#FFD700', 10);
+          updateUI();
+        }
+      });
+
+      // Options (answer platforms)
+      options.forEach(o => {
+        o.bounce += dt * 3;
+        if (!answered &&
+            player.x + player.w > o.x && player.x < o.x + o.w &&
+            player.vy > 0 &&
+            player.y + player.h > o.y && player.y + player.h < o.y + o.h + 22) {
+          checkAnswer(o); player.vy = -380; player.jumpCount = 0;
+        }
+      });
+
+      camera.targetX = Math.max(0, Math.min(player.x - W * 0.35, 2200));
+      camera.x += (camera.targetX - camera.x) * 8 * dt;
+
+      particles = particles.filter(p => { p.update(dt); return p.life > 0; });
+    }
+
+    /* ================= DRAWING ================= */
+    function drawRoundedRect(x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+    function drawStar(ctx, cx, cy, spikes, outerR, innerR, color) {
+      let rot = Math.PI / 2 * 3, x, y;
+      const step = Math.PI / spikes;
+      ctx.beginPath(); ctx.moveTo(cx, cy - outerR);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerR; y = cy + Math.sin(rot) * outerR;
+        ctx.lineTo(x, y); rot += step;
+        x = cx + Math.cos(rot) * innerR; y = cy + Math.sin(rot) * innerR;
+        ctx.lineTo(x, y); rot += step;
+      }
+      ctx.lineTo(cx, cy - outerR); ctx.closePath();
+      ctx.fillStyle = color; ctx.fill();
+    }
+
+    function drawPlayer() {
+      ctx.save();
+      ctx.translate(player.x + player.w / 2, player.y + player.h / 2);
+      if (player.facing < 0) ctx.scale(-1, 1);
+
+      const isRunning = Math.abs(player.vx) > 10;
+      const isJumping = !player.grounded;
+      const legSwing = isRunning ? Math.sin(player.animFrame * Math.PI / 2) * 5 : 0;
+      const armSwing = isRunning ? Math.sin(player.animFrame * Math.PI / 2) * 4 : 0;
+
+      // Shadow
+      ctx.save();
+      ctx.fillStyle = 'rgba(50, 50, 80, 0.15)';
+      ctx.beginPath(); ctx.ellipse(0, player.h / 2 + 6, player.w / 2, 4, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      // Backpack (behind body)
+      ctx.fillStyle = profile.avatar === 'cat' ? '#B8F0D6' : '#D4C5F9';
+      drawRoundedRect(-player.w/2 - 2, -6, 7, 20, 3); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      drawRoundedRect(-player.w/2 - 1, -4, 5, 8, 2); ctx.fill();
+
+      // Legs
+      ctx.fillStyle = '#7EB3E7';
+      drawRoundedRect(-8, player.h/2 - 12, 7, 12 + Math.abs(legSwing), 3); ctx.fill();
+      drawRoundedRect(1, player.h/2 - 12, 7, 12 - Math.abs(legSwing) + 4, 3); ctx.fill();
+      // Shoes
+      ctx.fillStyle = '#5A4A8A';
+      ctx.fillRect(-9, player.h/2 - 1 + (legSwing > 0 ? legSwing : 0), 9, 4);
+      ctx.fillRect(0, player.h/2 - 1 + (legSwing < 0 ? -legSwing : 0), 9, 4);
+
+      // Body (shirt)
+      const shirtColor = profile.avatar === 'girl' ? '#FF8FA3' : profile.avatar === 'cat' ? '#D4C5F9' : '#7EB3E7';
+      ctx.fillStyle = shirtColor;
+      drawRoundedRect(-11, -2, 22, 22, 5); ctx.fill();
+      // Shirt highlight
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      drawRoundedRect(-9, 0, 8, 10, 3); ctx.fill();
+
+      // Arms
+      ctx.fillStyle = shirtColor;
+      drawRoundedRect(-14, 0 - armSwing, 5, 14, 2); ctx.fill();
+      drawRoundedRect(9, 0 + armSwing, 5, 14, 2); ctx.fill();
+      // Hands
+      ctx.fillStyle = '#FFE0C2';
+      ctx.beginPath(); ctx.arc(-11.5, 14 - armSwing, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(11.5, 14 + armSwing, 3, 0, Math.PI * 2); ctx.fill();
+
+      // Head
+      ctx.fillStyle = '#FFE0C2';
+      if (profile.avatar === 'cat') {
+        // cat ears
+        ctx.fillStyle = '#C8A4E8';
+        ctx.beginPath(); ctx.moveTo(-10, -18); ctx.lineTo(-6, -26); ctx.lineTo(-2, -17); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(10, -18); ctx.lineTo(6, -26); ctx.lineTo(2, -17); ctx.closePath(); ctx.fill();
+        // face
+        ctx.fillStyle = '#D4C5F9';
+        ctx.beginPath(); ctx.arc(0, -12, 10, 0, Math.PI * 2); ctx.fill();
+      } else {
+        ctx.fillStyle = '#FFE0C2';
+        ctx.beginPath(); ctx.arc(0, -12, 10, 0, Math.PI * 2); ctx.fill();
+        // Hair
+        if (profile.avatar === 'girl') {
+          ctx.fillStyle = '#4A3F77';
+          ctx.beginPath();
+          ctx.moveTo(-10, -12); ctx.quadraticCurveTo(-14, -24, 0, -24);
+          ctx.quadraticCurveTo(14, -24, 10, -12);
+          ctx.lineTo(10, -6); ctx.quadraticCurveTo(6, -10, 0, -10);
+          ctx.quadraticCurveTo(-6, -10, -10, -6); ctx.closePath(); ctx.fill();
+          // Ponytail
+          ctx.beginPath(); ctx.arc(-10, -6, 4, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.fillStyle = '#8B5A3C';
+          ctx.beginPath();
+          ctx.moveTo(-10, -12); ctx.quadraticCurveTo(-12, -22, 0, -22);
+          ctx.quadraticCurveTo(12, -22, 10, -12);
+          ctx.quadraticCurveTo(7, -15, 2, -14);
+          ctx.quadraticCurveTo(-4, -14, -10, -12); ctx.closePath(); ctx.fill();
+        }
+      }
+
+      // Eyes
+      if (player.blink > 0) {
+        ctx.strokeStyle = '#3A3A5A'; ctx.lineWidth = 1.8; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(-6, -12); ctx.lineTo(-2, -12); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(2, -12); ctx.lineTo(6, -12); ctx.stroke();
+      } else {
+        // eye whites
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(-4, -12, 2.4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(4, -12, 2.4, 0, Math.PI * 2); ctx.fill();
+        // pupils
+        ctx.fillStyle = '#3A3A5A';
+        const pX = isRunning ? 0.6 : 0;
+        ctx.beginPath(); ctx.arc(-4 + pX, -12, 1.4, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(4 + pX, -12, 1.4, 0, Math.PI * 2); ctx.fill();
+      }
+      // Cheeks
+      ctx.fillStyle = 'rgba(255, 143, 163, 0.6)';
+      ctx.beginPath(); ctx.arc(-6, -8, 1.8, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(6, -8, 1.8, 0, Math.PI * 2); ctx.fill();
+      // Smile
+      ctx.strokeStyle = '#3A3A5A'; ctx.lineWidth = 1.4; ctx.lineCap = 'round';
+      ctx.beginPath();
+      if (isJumping) { ctx.arc(0, -7, 3, 0, Math.PI); }
+      else { ctx.moveTo(-3, -6); ctx.quadraticCurveTo(0, -4, 3, -6); }
+      ctx.stroke();
+
+      // Cat whiskers / nose
+      if (profile.avatar === 'cat') {
+        ctx.strokeStyle = '#3A3A5A'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(-10, -9); ctx.lineTo(-4, -8); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(10, -9); ctx.lineTo(4, -8); ctx.stroke();
+        ctx.fillStyle = '#FF8FA3';
+        ctx.beginPath(); ctx.arc(0, -9, 1.2, 0, Math.PI * 2); ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    function drawCloud(cx, cy, s) {
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, s * 0.9, 0, Math.PI * 2);
+      ctx.arc(cx + s, cy - s * 0.4, s, 0, Math.PI * 2);
+      ctx.arc(cx + s * 2, cy, s * 0.9, 0, Math.PI * 2);
+      ctx.arc(cx + s * 1.4, cy + s * 0.2, s * 0.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawHill(x, y, w, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.quadraticCurveTo(x + w/2, y - w/3, x + w, y);
+      ctx.lineTo(x + w, y + 200); ctx.lineTo(x, y + 200);
+      ctx.closePath(); ctx.fill();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Background layers (parallax)
+      // Distant hills (lavender)
+      drawHill(-camera.x * 0.1 + 0, H - 160, 400, '#E4D9F7');
+      drawHill(-camera.x * 0.1 + 340, H - 170, 380, '#D9C9F2');
+      drawHill(-camera.x * 0.1 + 660, H - 150, 420, '#E4D9F7');
+      drawHill(-camera.x * 0.1 + 1000, H - 165, 400, '#D9C9F2');
+
+      // Mid hills (pink)
+      drawHill(-camera.x * 0.25 + 60, H - 120, 340, '#FFD1DC');
+      drawHill(-camera.x * 0.25 + 360, H - 130, 320, '#FFBFCF');
+      drawHill(-camera.x * 0.25 + 640, H - 115, 360, '#FFD1DC');
+
+      // Clouds
+      for (let i = 0; i < 6; i++) {
+        const cx = ((i * 280 - camera.x * 0.15) % (W + 400)) - 120;
+        const cy = 40 + (i % 3) * 38;
+        drawCloud(cx, cy, 16);
+      }
+      // Sun
+      ctx.save();
+      ctx.fillStyle = '#FFF4B8';
+      ctx.beginPath(); ctx.arc(W - 70, 60, 28, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#FFE78A';
+      ctx.beginPath(); ctx.arc(W - 70, 60, 22, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      const shX = shakeTimer > 0 ? (Math.random() - .5) * shakeTimer * 22 : 0;
+      const shY = shakeTimer > 0 ? (Math.random() - .5) * shakeTimer * 22 : 0;
+
+      ctx.save();
+      ctx.translate(-camera.x + shX, shY);
+
+      // Platforms
+      platforms.forEach(p => {
+        if (p.type === 'ground') {
+          // grass top + soil
+          ctx.fillStyle = '#C9A27F';
+          ctx.fillRect(p.x, p.y + 8, p.w, p.h);
+          ctx.fillStyle = '#9EE09E';
+          ctx.fillRect(p.x, p.y, p.w, 16);
+          ctx.fillStyle = '#7ACF7A';
+          ctx.fillRect(p.x, p.y + 12, p.w, 4);
+          // grass tufts
+          ctx.fillStyle = '#B8F0D6';
+          for (let i = 0; i < p.w; i += 28) {
+            ctx.beginPath();
+            ctx.moveTo(p.x + i, p.y);
+            ctx.lineTo(p.x + i + 3, p.y - 6);
+            ctx.lineTo(p.x + i + 6, p.y);
+            ctx.closePath(); ctx.fill();
+          }
+          // small flowers
+          ctx.fillStyle = '#FFD1DC';
+          for (let i = 40; i < p.w; i += 140) {
+            ctx.beginPath(); ctx.arc(p.x + i, p.y - 2, 3, 0, Math.PI * 2); ctx.fill();
+          }
+        } else {
+          // cloud platform
+          ctx.save();
+          ctx.fillStyle = '#fff';
+          drawRoundedRect(p.x, p.y, p.w, p.h, 10); ctx.fill();
+          ctx.fillStyle = 'rgba(184, 224, 245, 0.5)';
+          ctx.beginPath();
+          ctx.arc(p.x + 16, p.y, 10, Math.PI, 0); ctx.fill();
+          ctx.beginPath();
+          ctx.arc(p.x + p.w/2, p.y - 4, 12, Math.PI, 0); ctx.fill();
+          ctx.beginPath();
+          ctx.arc(p.x + p.w - 16, p.y, 10, Math.PI, 0); ctx.fill();
+          ctx.restore();
+        }
+      });
+
+      // Coins (stars shape, gold)
+      coins.forEach(c => {
+        if (c.collected) return;
+        const cY = c.y + Math.sin(c.bob) * 5;
+        ctx.save();
+        ctx.fillStyle = 'rgba(50,50,80,0.15)';
+        ctx.beginPath(); ctx.ellipse(c.x, c.y + 22, 10, 3, 0, 0, Math.PI * 2); ctx.fill();
+        // outer
+        drawStar(ctx, c.x, cY, 5, c.r, c.r * 0.48, '#FFD700');
+        ctx.strokeStyle = '#D49B2A'; ctx.lineWidth = 1.4; ctx.stroke();
+        // inner sparkle
+        ctx.fillStyle = '#FFF4B8';
+        ctx.beginPath(); ctx.arc(c.x - 2, cY - 2, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      });
+
+      // Option platforms
+      options.forEach(o => {
+        const bY = Math.sin(o.bounce) * 4;
+        // shadow
+        ctx.fillStyle = 'rgba(50, 50, 80, 0.18)';
+        drawRoundedRect(o.x + 4, o.y + o.h + bY + 4, o.w, 6, 3); ctx.fill();
+
+        let c1, c2, emoji, border;
+        if (o.state === 'success') { c1 = '#B8F0D6'; c2 = '#7ACF7A'; emoji = '✅'; border = '#5AB85A'; }
+        else if (o.state === 'fail') { c1 = '#FFD1DC'; c2 = '#FF8FA3'; emoji = '❌'; border = '#E05A75'; }
+        else { c1 = '#FFFAD6'; c2 = '#FFE78A'; emoji = '❓'; border = '#E6B700'; }
+
+        const grd = ctx.createLinearGradient(o.x, o.y + bY, o.x, o.y + o.h + bY);
+        grd.addColorStop(0, c1); grd.addColorStop(1, c2);
+        ctx.fillStyle = grd;
+        drawRoundedRect(o.x, o.y + bY, o.w, o.h, 16); ctx.fill();
+        ctx.strokeStyle = border; ctx.lineWidth = 3;
+        drawRoundedRect(o.x, o.y + bY, o.w, o.h, 16); ctx.stroke();
+
+        // shiny top
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        drawRoundedRect(o.x + 4, o.y + bY + 4, o.w - 8, 10, 6); ctx.fill();
+
+        // Label
+        ctx.fillStyle = '#3A3A5A';
+        ctx.font = 'bold 17px "Baloo 2", sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        let fontSize = 17;
+        while (ctx.measureText(o.label).width > o.w - 20 && fontSize > 10) {
+          fontSize--; ctx.font = `bold ${fontSize}px "Baloo 2", sans-serif`;
+        }
+        ctx.fillText(o.label, o.x + o.w / 2, o.y + o.h / 2 + bY + 2);
+
+        // Emoji above
+        ctx.font = '26px sans-serif';
+        ctx.fillText(emoji, o.x + o.w / 2, o.y - 22 + bY);
+      });
+
+      drawPlayer();
+
+      particles.forEach(p => p.draw(ctx));
+      ctx.restore();
+    }
+
+    function gameLoop(ts) {
+      const dt = Math.min((ts - lastTime) / 1000, 0.1);
+      lastTime = ts;
+      update(dt); draw();
+      if (state === 'PLAYING' || state === 'COMPLETE' || state === 'GAMEOVER' || state === 'GRADE_COMPLETE') {
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
+    /* ================= INIT ================= */
+    resize();
+    setTimeout(resize, 200);
+    // Start a background loop that draws the scene behind the menus too (nice idle)
+    function menuIdle() {
+      draw();
+      if (state === 'MENU') requestAnimationFrame(menuIdle);
+    }
+    showStart();
+    // Draw something behind the start overlay
+    ctx.fillStyle = '#D4EEFA';
+    ctx.fillRect(0, 0, W, H);
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(e => console.warn('SW reg failed:', e));
+      });
+    }
+  </script>
+</body>
+</html>

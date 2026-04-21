@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#B8E0F5">
+  <title>English Adventure PK-6 🌈</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="English Adventure">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="A pastel platformer for learning English — Grades Pre-K to 6. 128 CEFR-aligned questions. Works offline.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky:#B8E0F5; --sky-2:#D4EEFA;
+      --rose:#FFD1DC; --rose-2:#FFE4EC;
+      --sun:#FFF4B8; --sun-2:#FFFAD6;
+      --mint:#B8F0D6; --mint-2:#D6F5E5;
+      --lav:#D4C5F9; --peach:#FFDAB8;
+      --ink:#3A3A5A; --ink-soft:#6B6B8A;
+      --coral:#FF8FA3; --grass:#9EE09E; --grass-d:#7ACF7A;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100vh}
+    body{
+      font-family:'Fredoka',system-ui,-apple-system,sans-serif;
+      color:var(--ink);
+      background:linear-gradient(135deg,var(--sky-2) 0%,var(--rose-2) 50%,var(--sun-2) 100%);
+      background-attachment:fixed;
+      -webkit-font-smoothing:antialiased;
+      min-height:100vh;position:relative;overflow-x:hidden;
+    }
+    .bg-blobs{position:fixed;inset:0;pointer-events:none;z-index:0}
+    .blob{position:absolute;border-radius:50%;filter:blur(44px);opacity:.6;animation:floatBlob 18s ease-in-out infinite}
+    .blob-1{width:340px;height:340px;background:var(--rose);top:-80px;left:-80px}
+    .blob-2{width:400px;height:400px;background:var(--mint);bottom:-120px;right:-120px;animation-delay:-6s}
+    .blob-3{width:280px;height:280px;background:var(--lav);top:40%;right:20%;animation-delay:-12s;opacity:.45}
+    @keyframes floatBlob{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-40px) scale(1.08)}}
+    header{position:relative;z-index:2;padding:22px 28px;display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-emoji{font-size:28px}
+    .brand-text{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:20px;color:var(--ink);letter-spacing:-.3px}
+    main{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:20px 24px 60px}
+    .hero{
+      background:rgba(255,255,255,.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border:2px solid rgba(255,255,255,.95);border-radius:32px;padding:40px 32px;
+      box-shadow:0 20px 50px rgba(95,103,165,.12);
+    }
+    .badge{display:inline-block;background:var(--lav);color:#4A3F77;font-weight:700;font-size:12px;padding:5px 12px;border-radius:20px;margin-bottom:16px;letter-spacing:.3px}
+    h1{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(30px,5.2vw,56px);line-height:1.05;letter-spacing:-.8px;margin-bottom:14px;color:var(--ink)}
+    .acc-rose{color:var(--coral)}.acc-mint{color:var(--grass-d)}.acc-sun{color:#D49B2A}
+    .sub{font-size:18px;color:var(--ink-soft);max-width:640px;margin-bottom:28px;line-height:1.5}
+    .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:28px}
+    .btn-cta{
+      display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);
+      padding:16px 24px;border-radius:20px;border:2px solid rgba(255,255,255,.95);min-width:240px;
+      transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s ease;
+      box-shadow:0 8px 22px rgba(95,103,165,.12);
+    }
+    .btn-cta b{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:18px;display:block}
+    .btn-cta small{display:block;font-size:12px;color:var(--ink-soft);font-weight:500;margin-top:2px}
+    .btn-cta:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 14px 30px rgba(95,103,165,.22)}
+    .cta-emoji{font-size:32px}
+    .arrow{margin-left:auto;font-size:22px;color:var(--ink-soft);transition:transform .2s ease}
+    .btn-cta:hover .arrow{transform:translateX(4px)}
+    .btn-cta.primary{background:linear-gradient(135deg,#fff 0%,var(--rose-2) 100%);border-color:var(--coral)}
+    .btn-cta.primary b{color:#8B2E4E}
+    .btn-cta.ghost{background:linear-gradient(135deg,#fff 0%,var(--sky-2) 100%);border-color:var(--sky)}
+    .btn-cta.ghost b{color:#1E4D72}
+    .mini-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;padding-top:22px;border-top:1px solid rgba(0,0,0,.06)}
+    .mini-stat{text-align:center}
+    .mini-v{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:30px;color:var(--ink);line-height:1}
+    .mini-l{font-size:12px;color:var(--ink-soft);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
+    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:26px}
+    .feature{background:rgba(255,255,255,.72);backdrop-filter:blur(12px);border:2px solid rgba(255,255,255,.9);border-radius:20px;padding:20px;transition:transform .22s ease}
+    .feature:hover{transform:translateY(-4px)}
+    .fi{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px}
+    .fi.rose{background:var(--rose-2)}.fi.sun{background:var(--sun-2)}.fi.mint{background:var(--mint-2)}.fi.sky{background:var(--sky-2)}
+    .feature h3{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:16px;margin-bottom:6px}
+    .feature p{font-size:13px;color:var(--ink-soft);line-height:1.5}
+    footer{position:relative;z-index:2;text-align:center;color:var(--ink-soft);font-size:13px;padding:20px}
+    @media (max-width:600px){header{padding:16px 20px}.hero{padding:28px 20px;border-radius:24px}.btn-cta{min-width:100%}}
+  </style>
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <header>
+    <div class="brand">
+      <span class="brand-emoji" role="img" aria-label="rainbow">🌈</span>
+      <span class="brand-text">English Adventure PK-6</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="badge">Ages 4–12 · Grades Pre-K to 6 · CEFR Pre A1.1 → A2.1</div>
+      <h1>Learn English by <span class="acc-rose">jumping</span>, <span class="acc-mint">running</span> and <span class="acc-sun">exploring</span>.</h1>
+      <p class="sub">A playful platformer with 128 curriculum-aligned questions across eight grades. Works great on tablets, laptops and computer-lab PCs.</p>
+      <div class="cta-row">
+        <a href="./game.html" class="btn-cta primary" data-testid="play-btn">
+          <span class="cta-emoji">🎮</span>
+          <span><b>Play the Game</b><small>Start the adventure</small></span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="./teacher.html" class="btn-cta ghost" data-testid="teacher-btn">
+          <span class="cta-emoji">📊</span>
+          <span><b>Teacher Panel</b><small>See student progress</small></span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+      <div class="mini-stats">
+        <div class="mini-stat"><div class="mini-v">8</div><div class="mini-l">Grades</div></div>
+        <div class="mini-stat"><div class="mini-v">128</div><div class="mini-l">Questions</div></div>
+        <div class="mini-stat"><div class="mini-v" id="s-students">0</div><div class="mini-l">Students on this PC</div></div>
+        <div class="mini-stat"><div class="mini-v" id="s-questions">0</div><div class="mini-l">Questions ✓ done</div></div>
+      </div>
+    </div>
+
+    <section class="features">
+      <div class="feature"><div class="fi rose">❤️</div><h3>Multiplayer profiles</h3><p>Each student types their name and keeps their own progress on this computer.</p></div>
+      <div class="feature"><div class="fi sun">🔊</div><h3>Voice &amp; sounds</h3><p>Questions are read aloud with Text-to-Speech. Soft Web Audio sound effects.</p></div>
+      <div class="feature"><div class="fi mint">📱</div><h3>Tablet friendly</h3><p>Big touch buttons, responsive canvas, portrait &amp; landscape supported.</p></div>
+      <div class="feature"><div class="fi sky">🇵🇦</div><h3>Panama-themed</h3><p>Real cultural content: Canal, Sancocho, Pollera, Mola and more.</p></div>
+    </section>
+  </main>
+
+  <footer>Made with care for PK-6 English learners · Works offline after first load</footer>
+
+  <script>
+    // Live stats from localStorage
+    try {
+      const profiles = JSON.parse(localStorage.getItem('pk6_profiles_v2') || '{}');
+      const names = Object.keys(profiles);
+      let q = 0;
+      names.forEach(n => {
+        const p = profiles[n];
+        Object.values(p.grades || {}).forEach(g => { q += (g.completed || []).length; });
+      });
+      document.getElementById('s-students').textContent = names.length;
+      document.getElementById('s-questions').textContent = q;
+    } catch(e) {}
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(e => console.warn('SW reg failed:', e));
+      });
+    }
+  </script>
+</body>
+</html>

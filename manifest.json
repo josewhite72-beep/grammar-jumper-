@@ -1,0 +1,55 @@
+{
+  "name": "English Adventure PK-6",
+  "short_name": "English Adventure",
+  "description": "A pastel platformer for learning English — Grades Pre-K to 6. 128 CEFR-aligned questions with Text-to-Speech and touch controls.",
+  "start_url": "./game.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#D4EEFA",
+  "theme_color": "#B8E0F5",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Play the Game",
+      "short_name": "Play",
+      "description": "Start a new adventure",
+      "url": "./game.html",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Teacher Panel",
+      "short_name": "Teacher",
+      "description": "View student progress",
+      "url": "./teacher.html",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
