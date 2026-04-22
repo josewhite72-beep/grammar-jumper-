@@ -509,6 +509,18 @@
     </div>
   </div>
 
+  <!-- AUDIO SYSTEM (MOVED BEFORE FIRST SCRIPT) -->
+  <audio id="bg-music" loop>
+    <source src="/audio/bg.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="sfx-jump" preload="auto"><source src="/audio/jump.wav" type="audio/wav"></audio>
+  <audio id="sfx-correct" preload="auto"><source src="/audio/correct.wav" type="audio/wav"></audio>
+  <audio id="sfx-wrong" preload="auto"><source src="/audio/wrong.wav" type="audio/wav"></audio>
+  <div style="position:fixed;top:10px;right:10px;z-index:999;">
+    <button id="btnMusic">🎵</button>
+    <button id="btnSound">🔊</button>
+  </div>
+
   <script>
     /* ================= CURRICULUM DATA (all 8 grades, 128 questions) ================= */
 const CURRICULUM_DATA = {
@@ -4483,5 +4495,62 @@ const CURRICULUM_DATA = {
       });
     }
   </script>
+
+<script>
+(function(){
+const bg=document.getElementById('bg-music');
+let music=true, sound=true, started=false;
+
+function start(){
+ if(!started && music && bg){
+  bg.volume=0.3;
+  bg.play().catch(()=>{});
+  started=true;
+ }
+}
+document.addEventListener('click', start, {once:true});
+
+document.getElementById('btnMusic').onclick=()=>{
+ if(!bg) return;
+ if(bg.paused){ bg.play(); music=true; }
+ else{ bg.pause(); music=false; }
+};
+
+document.getElementById('btnSound').onclick=()=>{
+ sound=!sound;
+};
+
+window.AudioFX={
+ play:(id)=>{
+  if(!sound) return;
+  const a=document.getElementById(id);
+  if(a){ a.currentTime=0; a.play().catch(()=>{}); }
+ }
+};
+})();
+</script>
+
+<!-- INIT MUSIC (añadido antes del último </script>) -->
+<script>
+// INIT MUSIC
+function initMusic() {
+  const music = document.getElementById("bg-music");
+  if (!music) return;
+
+  music.volume = 0.3;
+
+  const start = () => {
+    music.play().catch(() => {});
+    document.removeEventListener("touchstart", start);
+    document.removeEventListener("click", start);
+  };
+
+  document.addEventListener("touchstart", start);
+  document.addEventListener("click", start);
+}
+
+window.addEventListener("DOMContentLoaded", initMusic);
+</script>
+
 </body>
 </html>
