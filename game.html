@@ -3639,10 +3639,16 @@ const CURRICULUM_DATA = {
           goal: theme ? theme.goal : '',
           competence: c.competence_tag || 'linguistic',
           audio: true,
-          qData: {
-            q: c.question_text, options: c.options.slice(),
-            correct: c.options.indexOf(c.correct_answer)
-          }
+          qData: (() => {
+            const opts = c.options.slice();
+            const correctLabel = c.correct_answer;
+            // Fisher-Yates shuffle
+            for (let i = opts.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [opts[i], opts[j]] = [opts[j], opts[i]];
+            }
+            return { q: c.question_text, options: opts, correct: opts.indexOf(correctLabel) };
+          })()
         };
       });
     }
@@ -3911,12 +3917,29 @@ const CURRICULUM_DATA = {
           if (profile.name) updateProgress(profile.name, currentGrade, currentLevel.id, true, earnedStars);
           updateUI();
 
-          state = 'COMPLETE';
-          document.getElementById('lc-stars').textContent = '⭐'.repeat(earnedStars) + '☆'.repeat(3 - earnedStars);
-          document.getElementById('lc-stats').innerHTML =
-            `🪙 +${levelCoins} Coins  •  ⭐ +${earnedStars} Star${earnedStars > 1 ? 's' : ''}<br>` +
-            `<span style="font-size:13px;opacity:0.75">${currentLevel.competence} skill practiced</span>`;
-          document.getElementById('level-complete').style.display = 'flex';
+          // Determine if next question is same scenario or grade is done
+          const nextIdx = currentLevelIdx + 1;
+          const isGradeDone = nextIdx >= allLevels.length;
+          const isScenarioChange = !isGradeDone &&
+            allLevels[nextIdx].scenarioId !== currentLevel.scenarioId;
+
+          if (isGradeDone || isScenarioChange) {
+            // Show level-complete panel only at scenario boundary or grade end
+            state = 'COMPLETE';
+            const scenarioNum = currentLevel.scenarioId || '';
+            document.getElementById('lc-title').textContent =
+              isGradeDone ? 'Grade Complete! 🏆' : `Scenario ${scenarioNum} Done! 🎉`;
+            document.getElementById('lc-stars').textContent = '⭐'.repeat(earnedStars) + '☆'.repeat(3 - earnedStars);
+            document.getElementById('lc-stats').innerHTML =
+              `🪙 +${levelCoins} Coins  •  ⭐ +${earnedStars} Star${earnedStars > 1 ? 's' : ''}<br>` +
+              `<span style="font-size:13px;opacity:0.75">${currentLevel.competence} skill practiced</span>`;
+            document.getElementById('level-complete').style.display = 'flex';
+          } else {
+            // Same scenario — auto-advance without panel
+            currentLevelIdx++;
+            state = 'PLAYING';
+            spawnLevel(allLevels[currentLevelIdx]);
+          }
         }, 1400);
       }
     }
