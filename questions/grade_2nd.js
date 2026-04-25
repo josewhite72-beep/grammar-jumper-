@@ -162,103 +162,71 @@ const GRADE_QUESTIONS_2ND = [
   {
     "question_id": 11,
     "scenario_id": 2,
-    "question_text": "A big book is ___",
+    "question_text": "An elephant is very ___",
     "options": [
-      "large",
+      "big",
       "small",
       "thin"
     ],
-    "correct_answer": "large",
+    "correct_answer": "big",
     "mechanic_type": "tap",
     "competence_tag": "linguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_2_1_a",
+    "visual_asset_key": "img_2_1_elephant",
     "standard_alignment": "G2A1.1.S2"
   },
   {
     "question_id": 12,
     "scenario_id": 2,
-    "question_text": "This book is big. It is ___",
+    "question_text": "A mouse is very ___",
     "options": [
-      "large",
-      "short",
-      "tiny"
+      "small",
+      "big",
+      "tall"
     ],
-    "correct_answer": "large",
+    "correct_answer": "small",
     "mechanic_type": "tap",
     "competence_tag": "linguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_2_1_this",
+    "visual_asset_key": "img_2_1_mouse",
     "standard_alignment": "G2A1.1.S2"
   },
   {
     "question_id": 13,
     "scenario_id": 2,
-    "question_text": "A big bag is ___",
+    "question_text": "The tree is very ___",
     "options": [
-      "large",
-      "little",
-      "short"
+      "tall",
+      "short",
+      "wide"
     ],
-    "correct_answer": "large",
+    "correct_answer": "tall",
     "mechanic_type": "tap",
     "competence_tag": "linguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_2_1_a",
+    "visual_asset_key": "img_2_1_tree",
     "standard_alignment": "G2A1.1.S2"
   },
   {
     "question_id": 14,
     "scenario_id": 2,
-    "question_text": "Big means ___",
+    "question_text": "The pencil is very ___",
     "options": [
-      "large",
-      "small",
-      "narrow"
+      "short",
+      "tall",
+      "big"
     ],
-    "correct_answer": "large",
+    "correct_answer": "short",
     "mechanic_type": "tap",
     "competence_tag": "linguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_2_1_big",
+    "visual_asset_key": "img_2_1_pencil",
     "standard_alignment": "G2A1.1.S2"
   },
   {
     "question_id": 15,
     "scenario_id": 2,
-    "question_text": "A big desk is ___",
-    "options": [
-      "large",
-      "tiny",
-      "thin"
-    ],
-    "correct_answer": "large",
-    "mechanic_type": "tap",
-    "competence_tag": "linguistic",
-    "audio_cue_required": false,
-    "visual_asset_key": "img_2_1_a",
-    "standard_alignment": "G2A1.1.S2"
-  },
-  {
-    "question_id": 16,
-    "scenario_id": 2,
-    "question_text": "A small bag is ___",
-    "options": [
-      "little",
-      "big",
-      "tall"
-    ],
-    "correct_answer": "little",
-    "mechanic_type": "tap",
-    "competence_tag": "linguistic",
-    "audio_cue_required": false,
-    "visual_asset_key": "img_2_2_a",
-    "standard_alignment": "G2A1.1.S2"
-  },
-  {
-    "question_id": 17,
-    "scenario_id": 2,
-    "question_text": "The bag is brown. It is ___",
+    "question_text": "The chocolate is ___",
     "options": [
       "brown",
       "blue",
@@ -268,55 +236,87 @@ const GRADE_QUESTIONS_2ND = [
     "mechanic_type": "tap",
     "competence_tag": "linguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_2_2_the",
+    "visual_asset_key": "img_2_1_chocolate",
+    "standard_alignment": "G2A1.1.S2"
+  },
+  {
+    "question_id": 16,
+    "scenario_id": 2,
+    "question_text": "The bag is very ___. I can't carry it.",
+    "options": [
+      "heavy",
+      "light",
+      "thin"
+    ],
+    "correct_answer": "heavy",
+    "mechanic_type": "tap",
+    "competence_tag": "linguistic",
+    "audio_cue_required": false,
+    "visual_asset_key": "img_2_2_bag",
+    "standard_alignment": "G2A1.1.S2"
+  },
+  {
+    "question_id": 17,
+    "scenario_id": 2,
+    "question_text": "A feather is very ___",
+    "options": [
+      "light",
+      "heavy",
+      "big"
+    ],
+    "correct_answer": "light",
+    "mechanic_type": "tap",
+    "competence_tag": "linguistic",
+    "audio_cue_required": false,
+    "visual_asset_key": "img_2_2_feather",
     "standard_alignment": "G2A1.1.S2"
   },
   {
     "question_id": 18,
     "scenario_id": 2,
-    "question_text": "Small means ___",
+    "question_text": "The road is very ___",
     "options": [
-      "little",
-      "large",
-      "wide"
+      "long",
+      "short",
+      "small"
     ],
-    "correct_answer": "little",
+    "correct_answer": "long",
     "mechanic_type": "tap",
     "competence_tag": "linguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_2_2_small",
+    "visual_asset_key": "img_2_2_road",
     "standard_alignment": "G2A1.1.S2"
   },
   {
     "question_id": 19,
     "scenario_id": 2,
-    "question_text": "A brown book is ___",
+    "question_text": "The river is very ___",
     "options": [
-      "brown",
-      "white",
-      "pink"
+      "wide",
+      "narrow",
+      "short"
     ],
-    "correct_answer": "brown",
+    "correct_answer": "wide",
     "mechanic_type": "tap",
     "competence_tag": "linguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_2_2_a",
+    "visual_asset_key": "img_2_2_river",
     "standard_alignment": "G2A1.1.S2"
   },
   {
     "question_id": 20,
     "scenario_id": 2,
-    "question_text": "A small pencil is ___",
+    "question_text": "The teddy bear is ___. I love it!",
     "options": [
-      "short",
-      "tall",
-      "long"
+      "soft",
+      "hard",
+      "cold"
     ],
-    "correct_answer": "short",
+    "correct_answer": "soft",
     "mechanic_type": "tap",
     "competence_tag": "linguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_2_2_a",
+    "visual_asset_key": "img_2_2_bear",
     "standard_alignment": "G2A1.1.S2"
   },
   {

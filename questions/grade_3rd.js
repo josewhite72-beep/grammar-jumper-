@@ -2,161 +2,161 @@ const GRADE_QUESTIONS_3RD = [
   {
     "question_id": 1,
     "scenario_id": 1,
-    "question_text": "Where are you? I am at ___",
+    "question_text": "We borrow books at the ___",
     "options": [
-      "school",
+      "library",
       "market",
-      "park"
+      "hospital"
     ],
-    "correct_answer": "school",
+    "correct_answer": "library",
     "mechanic_type": "tap",
     "competence_tag": "sociolinguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_1_1_where",
+    "visual_asset_key": "img_1_1_library",
     "standard_alignment": "G3A1.1.S1"
   },
   {
     "question_id": 2,
     "scenario_id": 1,
-    "question_text": "We learn at ___",
+    "question_text": "We see a doctor at the ___",
     "options": [
-      "school",
-      "store",
-      "home"
+      "hospital",
+      "park",
+      "school"
     ],
-    "correct_answer": "school",
+    "correct_answer": "hospital",
     "mechanic_type": "tap",
     "competence_tag": "sociolinguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_1_1_we",
+    "visual_asset_key": "img_1_1_hospital",
     "standard_alignment": "G3A1.1.S1"
   },
   {
     "question_id": 3,
     "scenario_id": 1,
-    "question_text": "Students go to ___",
+    "question_text": "We play and run at the ___",
     "options": [
-      "school",
-      "hospital",
-      "bank"
+      "park",
+      "bank",
+      "library"
     ],
-    "correct_answer": "school",
+    "correct_answer": "park",
     "mechanic_type": "tap",
     "competence_tag": "sociolinguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_1_1_students",
+    "visual_asset_key": "img_1_1_park",
     "standard_alignment": "G3A1.1.S1"
   },
   {
     "question_id": 4,
     "scenario_id": 1,
-    "question_text": "I study at ___",
+    "question_text": "We save money at the ___",
     "options": [
-      "school",
-      "market",
-      "restaurant"
+      "bank",
+      "park",
+      "market"
     ],
-    "correct_answer": "school",
+    "correct_answer": "bank",
     "mechanic_type": "tap",
     "competence_tag": "sociolinguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_1_1_i",
+    "visual_asset_key": "img_1_1_bank",
     "standard_alignment": "G3A1.1.S1"
   },
   {
     "question_id": 5,
     "scenario_id": 1,
-    "question_text": "Teachers work at ___",
-    "options": [
-      "school",
-      "park",
-      "store"
-    ],
-    "correct_answer": "school",
-    "mechanic_type": "tap",
-    "competence_tag": "sociolinguistic",
-    "audio_cue_required": false,
-    "visual_asset_key": "img_1_1_teachers",
-    "standard_alignment": "G3A1.1.S1"
-  },
-  {
-    "question_id": 6,
-    "scenario_id": 1,
-    "question_text": "Where are you? I am at the ___",
+    "question_text": "We buy vegetables at the ___",
     "options": [
       "market",
       "school",
-      "park"
-    ],
-    "correct_answer": "market",
-    "mechanic_type": "tap",
-    "competence_tag": "sociolinguistic",
-    "audio_cue_required": false,
-    "visual_asset_key": "img_1_2_where",
-    "standard_alignment": "G3A1.1.S1"
-  },
-  {
-    "question_id": 7,
-    "scenario_id": 1,
-    "question_text": "We buy food at the ___",
-    "options": [
-      "market",
-      "library",
       "bank"
     ],
     "correct_answer": "market",
     "mechanic_type": "tap",
     "competence_tag": "sociolinguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_1_2_we",
+    "visual_asset_key": "img_1_1_market",
+    "standard_alignment": "G3A1.1.S1"
+  },
+  {
+    "question_id": 6,
+    "scenario_id": 1,
+    "question_text": "Students learn at the ___",
+    "options": [
+      "school",
+      "hospital",
+      "park"
+    ],
+    "correct_answer": "school",
+    "mechanic_type": "tap",
+    "competence_tag": "sociolinguistic",
+    "audio_cue_required": false,
+    "visual_asset_key": "img_1_2_school",
+    "standard_alignment": "G3A1.1.S1"
+  },
+  {
+    "question_id": 7,
+    "scenario_id": 1,
+    "question_text": "Letters and packages go to the ___",
+    "options": [
+      "post office",
+      "bank",
+      "library"
+    ],
+    "correct_answer": "post office",
+    "mechanic_type": "tap",
+    "competence_tag": "sociolinguistic",
+    "audio_cue_required": false,
+    "visual_asset_key": "img_1_2_post",
     "standard_alignment": "G3A1.1.S1"
   },
   {
     "question_id": 8,
     "scenario_id": 1,
-    "question_text": "Fruits are in the ___",
+    "question_text": "We pray and reflect at the ___",
     "options": [
+      "church",
       "market",
-      "school",
-      "office"
+      "school"
     ],
-    "correct_answer": "market",
+    "correct_answer": "church",
     "mechanic_type": "tap",
     "competence_tag": "sociolinguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_1_2_fruits",
+    "visual_asset_key": "img_1_2_church",
     "standard_alignment": "G3A1.1.S1"
   },
   {
     "question_id": 9,
     "scenario_id": 1,
-    "question_text": "I go shopping at the ___",
+    "question_text": "Police officers work at the ___",
     "options": [
-      "market",
+      "police station",
       "hospital",
-      "classroom"
+      "library"
     ],
-    "correct_answer": "market",
+    "correct_answer": "police station",
     "mechanic_type": "tap",
     "competence_tag": "sociolinguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_1_2_i",
+    "visual_asset_key": "img_1_2_police",
     "standard_alignment": "G3A1.1.S1"
   },
   {
     "question_id": 10,
     "scenario_id": 1,
-    "question_text": "Vegetables are sold in the ___",
+    "question_text": "We catch a bus at the ___",
     "options": [
-      "market",
-      "park",
-      "school"
+      "bus stop",
+      "bank",
+      "park"
     ],
-    "correct_answer": "market",
+    "correct_answer": "bus stop",
     "mechanic_type": "tap",
     "competence_tag": "sociolinguistic",
     "audio_cue_required": false,
-    "visual_asset_key": "img_1_2_vegetables",
+    "visual_asset_key": "img_1_2_bus",
     "standard_alignment": "G3A1.1.S1"
   },
   {
