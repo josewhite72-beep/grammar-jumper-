@@ -3,7 +3,7 @@
  * after the first successful visit. Perfect for school computer labs
  * where the internet may be unreliable.
  */
-const CACHE_NAME = "english-adventure-v1";
+const CACHE_NAME = "english-adventure-v2";
 const SHELL_FILES = [
   "./",
   "./index.html",
@@ -15,6 +15,15 @@ const SHELL_FILES = [
   "./icons/icon-maskable-512.png",
   "./icons/apple-touch-icon.png",
   "./icons/favicon-32.png",
+  // External question banks (80 questions per grade)
+  "./questions/grade_prek.js",
+  "./questions/grade_k.js",
+  "./questions/grade_1st.js",
+  "./questions/grade_2nd.js",
+  "./questions/grade_3rd.js",
+  "./questions/grade_4th.js",
+  "./questions/grade_5th.js",
+  "./questions/grade_6th.js",
   // Google Fonts used by the game/landing
   "https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@500;700;800&display=swap"
 ];

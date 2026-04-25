@@ -3999,6 +3999,18 @@ const CURRICULUM_DATA = {
       });
     }
 
+    /* ===== EXTERNAL QUESTION MAP ===== */
+    const EXTERNAL_QUESTIONS = {
+      'prek':  () => typeof GRADE_QUESTIONS_PREK  !== 'undefined' ? GRADE_QUESTIONS_PREK  : null,
+      'kinder':() => typeof GRADE_QUESTIONS_K     !== 'undefined' ? GRADE_QUESTIONS_K     : null,
+      '1st':   () => typeof GRADE_QUESTIONS_1ST   !== 'undefined' ? GRADE_QUESTIONS_1ST   : null,
+      '2nd':   () => typeof GRADE_QUESTIONS_2ND   !== 'undefined' ? GRADE_QUESTIONS_2ND   : null,
+      '3rd':   () => typeof GRADE_QUESTIONS_3RD   !== 'undefined' ? GRADE_QUESTIONS_3RD   : null,
+      '4th':   () => typeof GRADE_QUESTIONS_4TH   !== 'undefined' ? GRADE_QUESTIONS_4TH   : null,
+      '5th':   () => typeof GRADE_QUESTIONS_5TH   !== 'undefined' ? GRADE_QUESTIONS_5TH   : null,
+      '6th':   () => typeof GRADE_QUESTIONS_6TH   !== 'undefined' ? GRADE_QUESTIONS_6TH   : null,
+    };
+
     function selectGrade(gradeId) {
       Sounds.init(); if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
       currentGrade = gradeId;
@@ -4006,6 +4018,15 @@ const CURRICULUM_DATA = {
       hideAll();
       document.getElementById('hud').style.display = 'flex';
       document.getElementById('prompt-box').style.display = 'block';
+
+      /* Inject external questions if available */
+      const extFn = EXTERNAL_QUESTIONS[gradeId];
+      if (extFn) {
+        const extQ = extFn();
+        if (extQ && extQ.length > 0 && CURRICULUM_DATA[gradeId]) {
+          CURRICULUM_DATA[gradeId].challenges = extQ;
+        }
+      }
 
       const raw = CURRICULUM_DATA[gradeId];
       allLevels = parseGameData(raw);
@@ -4551,6 +4572,16 @@ function initMusic() {
 
 window.addEventListener("DOMContentLoaded", initMusic);
 </script>
+
+<!-- External question banks (80 questions per grade) -->
+<script src="./questions/grade_prek.js"></script>
+<script src="./questions/grade_k.js"></script>
+<script src="./questions/grade_1st.js"></script>
+<script src="./questions/grade_2nd.js"></script>
+<script src="./questions/grade_3rd.js"></script>
+<script src="./questions/grade_4th.js"></script>
+<script src="./questions/grade_5th.js"></script>
+<script src="./questions/grade_6th.js"></script>
 
 </body>
 </html>
