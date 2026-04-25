@@ -3638,7 +3638,7 @@ const CURRICULUM_DATA = {
           theme: theme ? theme.theme_name : 'Practice',
           goal: theme ? theme.goal : '',
           competence: c.competence_tag || 'linguistic',
-          audio: !!c.audio_cue_required,
+          audio: true,
           qData: {
             q: c.question_text, options: c.options.slice(),
             correct: c.options.indexOf(c.correct_answer)
